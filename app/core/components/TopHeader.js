@@ -6,6 +6,7 @@ import logout from "app/auth/mutations/logout"
 import logo from "public/logo.png"
 import Hamburger from "hamburger-react"
 import Button from '@mui/material/Button'
+import { Grid } from "@mui/material"
 
 const UserInfo = () => {
   const currentUser = useCurrentUser()
@@ -17,8 +18,7 @@ const UserInfo = () => {
         <Button variant="contained"
           onClick={async () => {
             await logoutMutation()
-          }}>Logout
-        </Button>
+          }}>Logout</Button>
         <div>
           <br />
           Name: <code>{currentUser.name}</code>
@@ -31,8 +31,14 @@ const UserInfo = () => {
   } else {
     return (
       <>
-        <Button variant="contained" href={Routes.SignupPage().pathname}>Sign Up</Button>
-        <Button variant="contained" href={Routes.LoginPage().pathname}>Login</Button>
+        <Grid container spacing={1} justify="center">
+          <Grid item>
+            <Button color="primary" variant="contained" href={Routes.SignupPage().pathname}>Sign Up</Button>
+          </Grid>
+          <Grid item>
+            <Button color="primary" variant="contained" href={Routes.LoginPage().pathname}>Login</Button>
+          </Grid>
+        </Grid>
       </>
     )
   }

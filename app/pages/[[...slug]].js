@@ -72,13 +72,13 @@ const Home = (props) => {
       </footer>
 
       <style jsx global>{`
-        @import url('@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100&display=swap');');
-        html,
+        @import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100;0,200;0,300;0,400;0,600;0,700;1,300;1,700&display=swap');        html,
         body {
           padding: 0;
           margin: 0;
-          font-family: "Libre Franklin", -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-            Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+          font-family: 'Josefin Sans', sans-serif;
+          font-weight: 300;
+          font-size: 24px;
         }
 
         * {

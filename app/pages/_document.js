@@ -17,6 +17,11 @@ class MyDocument extends Document {
     return (
       <Html lang="en">
         <DocumentHead />
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/icon?family=Material+Icons"
+        />
+        <meta name="viewport" content="initial-scale=1, width=device-width" />
         <body>
           <Main />
           <BlitzScript />
