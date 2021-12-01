@@ -3,10 +3,11 @@ import { Image, Link, BlitzPage, useMutation, Routes } from "blitz"
 import Layout from "app/core/layouts/Layout"
 import { useCurrentUser } from "app/core/hooks/useCurrentUser"
 import logout from "app/auth/mutations/logout"
-import logo from "public/logo.png"
 import Hamburger from "hamburger-react"
-import Button from '@mui/material/Button'
+import Button from "@mui/material/Button"
+import { AppBar } from "@mui/material"
 import { Grid } from "@mui/material"
+import logo from "public/cmslogo.svg"
 
 const UserInfo = () => {
   const currentUser = useCurrentUser()
@@ -48,27 +49,25 @@ export default function TopHeader(props) {
   // console.log("props", props)
 
   // TODO: work on fixing this into one possibly
-  const [isHidden, setHidden] = useState(true)
   const [isOpen, setOpen] = useState(false);
   const [isActive, setActive] = useState(false);
   const handleToggle = () => {
     setActive(!isActive);
   };
 
-  setTimeout(() => {
-    setHidden(false)
-  }, 2000);
-
-  const unhideRef = useRef()
-
-
   return (
-    <div className="top-header" style={{width: "100%", padding: "10px", background: "#577ae3", color: "#FFF"}}>
-      {/* <h1 style={{ float: "left" }}>{props.name}</h1> */}
-      <h1 style={{float: "left"}}>CMS?</h1>
-      {/* TODO work on fixing this logic .. better shorthand */}
-      <Hamburger toggled={isOpen} onToggle={() => isOpen ? setOpen(false) : setOpen() & handleToggle()} />
-      <div ref={unhideRef} id="menu-container" className={`${isHidden ? 'hide' : ''}  ${isActive ? "slideout" : "slidein"}`}>
+    <>
+      <AppBar position="sticky" style={{minHeight: "11vh", background: "#577ae3", color: "#FFF", position: "relative", "overflow-x": "clip" }}>
+        <Grid container alignItems="center" style={{padding:"10px"}}>
+          <Grid item xs={2}>
+            <Image layout="responsive" src={logo} alt="blitzjs" />
+          </Grid>
+          <Grid item xs={9}></Grid>
+          <Grid item xs={1}>
+            <Hamburger toggled={isOpen} onToggle={() => isOpen ? setOpen(false) : setOpen() & handleToggle()} />
+          </Grid>
+        </Grid>
+        <div id="menu-container" className={`${isActive ? "slideout" : "slidein"}`}>
         <Suspense fallback="Loading...">
           <UserInfo />
         </Suspense>
@@ -85,15 +84,14 @@ export default function TopHeader(props) {
           ))}
         </ul>
       </div>
+      </AppBar>     {/* TODO work on fixing this logic .. better shorthand */}
       <style jsx global>{`
         .hide {
           opacity: 0;
         }
         .hamburger-react {
-          position: absolute !important;
+          float: right;
           z-index: 1 !important;
-          top: 10px;
-          right: 10px;
         }
         #menu-container ul a {
           color: #FFF;
@@ -103,16 +101,19 @@ export default function TopHeader(props) {
            padding: 0;
         }
         #menu-container {
-            height: 100%;
+         //   min-height: 87.6vh;
+         //   overflow-y: hidden;
+         //   height: 100%;
             width: 40%;
             background: #577ae3;
-            border: 1px solid black;
-            padding: 80px 50px 0px 10px;
-            display: flex;
-            flex-direction: column;
-            position: fixed;
-            top: 0;
-            right: -30px;
+            padding: 10px;
+            position: absolute;
+            top: 100%;
+         //   right: -30px;
+         //   position: absolute;
+         //   height: auto;
+         //   top: 100%;
+            box-shadow: -3px 0px 10px rgba(0,0,0.5,0.5);
         }
         #menu-container.slidein {
             animation: slidein .25s cubic-bezier(.68,-0.55,.27,1.55) forwards;
@@ -122,24 +123,24 @@ export default function TopHeader(props) {
         }
         @keyframes slidein {
           from {
-            transform: translateX(0%);
+            transform: translateX(150%);
           }
 
           to {
-            transform: translateX(100%);
+            transform: translateX(255%);
           }
         }
         @keyframes slideout {
           from {
-            transform: translateX(100%);
+            transform: translateX(255%);
           }
 
           to {
-            transform: translateX(0%);
+            transform: translateX(150%);
           }
         }
 
       `}</style>
-    </div>
+    </>
   )
 }

@@ -1,10 +1,11 @@
 import { Suspense } from "react"
 import { Image, Link, useMutation, Routes, useParams, useQuery } from "blitz"
 import Layout from "app/core/layouts/Layout"
-import logo from "public/logo.png"
 import TopHeader from "app/core/components/TopHeader"
 import db from "db"
 import getProject from "app/projects/queries/getProject"
+import getSection from "app/sections/queries/getSection"
+import parse from "html-react-parser"
 
 // This gets called on every request
 export async function getServerSideProps() {
@@ -15,13 +16,23 @@ export async function getServerSideProps() {
 }
 
 function Project() {
-  // const project = getProject({id: 1})
-  // console.log("project:", project)
   const [project, {refetch}] = useQuery(getProject, { id: 1 })
-  console.log("project:", JSON.stringify(project, null, 2))
-  console.log("refetch:", refetch)
+  // console.log("project:", JSON.stringify(project, null, 2))
+  // console.log("refetch:", refetch)
   return <>
     <h1>{project.name}</h1>
+  </>
+}
+
+const Section = (props) => {
+  const params = useParams()
+  const route = params.slug || ["home"]
+  const fullRoute = route.toString().replace(/,/g, "/")
+  // todo: fix this to use for sub-routes eventually
+  const [section, {refetch}] = useQuery(getSection, { id: 1 })
+  return <>
+    <h1>{fullRoute}</h1>
+    {parse(section.content)}
   </>
 }
 
@@ -43,7 +54,8 @@ const Home = (props) => {
       <TopHeader links={links} />
       <main>
         <Suspense fallback={<div>Loading...</div>}>
-        <Project />
+          <Section />
+        {/* <Project />
         {(section && (
           <div>
             <div id="content">
@@ -54,11 +66,8 @@ const Home = (props) => {
           <div id="404">
             <p><strong>404</strong> | you have tried to view a page that does not exist</p>
           </div>
-        )}
+        )} */}
         </Suspense>
-        <div className="logo">
-          <Image src={logo} alt="blitzjs" />
-        </div>
       </main>
 
       <footer>
@@ -93,7 +102,6 @@ const Home = (props) => {
           justify-content: center;
           align-items: center;
         }
-
         main {
           padding: 5rem 0;
           flex: 1;

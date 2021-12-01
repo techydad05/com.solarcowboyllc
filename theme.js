@@ -15,7 +15,7 @@ const theme = createTheme({
   },
   palette: {
     primary: {
-      main: indigo[600],
+      main: indigo.A200,
     },
     secondary: {
       main: blue[500],

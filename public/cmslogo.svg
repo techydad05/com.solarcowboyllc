@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="684" height="203" viewBox="0 0 684 203">
+  <defs>
+    <style>
+      .cls-1 {
+        font-size: 250px;
+        filter: url(#filter);
+        font-family: "Josefin Sans";
+        font-weight: 600;
+      }
+
+      .cls-2 {
+        font-weight: 300;
+        font-style: italic;
+      }
+    </style>
+    <filter id="filter" x="7" y="2" width="667" height="198" filterUnits="userSpaceOnUse">
+      <feOffset result="offset" dx="-8.09" dy="5.878" in="SourceAlpha"/>
+      <feGaussianBlur result="blur"/>
+      <feFlood result="flood" flood-color="#0f13aa" flood-opacity="0.67"/>
+      <feComposite result="composite" operator="in" in2="blur"/>
+      <feBlend result="blend" in="SourceGraphic"/>
+      <feImage preserveAspectRatio="none" x="15" y="2" width="659" height="192" result="image" xlink:href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB3aWR0aD0iNjU5IiBoZWlnaHQ9IjE5MiIgdmlld0JveD0iMCAwIDY1OSAxOTIiPgogIDxkZWZzPgogICAgPHN0eWxlPgogICAgICAuY2xzLTEgewogICAgICAgIGZpbGw6IHVybCgjbGluZWFyLWdyYWRpZW50KTsKICAgICAgfQogICAgPC9zdHlsZT4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0ibGluZWFyLWdyYWRpZW50IiB4MT0iMzI5LjUiIHkxPSIxOTIiIHgyPSIzMjkuNSIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiMxOTAzNTkiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIwLjkwNSIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgPC9kZWZzPgogIDxyZWN0IGNsYXNzPSJjbHMtMSIgd2lkdGg9IjY1OSIgaGVpZ2h0PSIxOTIiLz4KPC9zdmc+Cg=="/>
+      <feComposite result="composite-2" operator="in" in2="SourceGraphic"/>
+      <feBlend result="blend-2" in2="blend"/>
+    </filter>
+  </defs>
+  <text id="CMS_" data-name="CMS?" class="cls-1" x="2" y="191">CMS<tspan class="cls-2">?</tspan></text>
+</svg>
