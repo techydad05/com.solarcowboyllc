@@ -11,7 +11,6 @@ export function Form({ children, submitText, schema, initialValues, onSubmit, ..
         <form onSubmit={handleSubmit} className="form" {...props}>
           {/* Form fields supplied as children are rendered here */}
           {children}
-
           {submitError && (
             <div
               role="alert"

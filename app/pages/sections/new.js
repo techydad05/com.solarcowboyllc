@@ -2,14 +2,17 @@ import { Link, useRouter, useMutation, Routes } from "blitz"
 import Layout from "app/core/layouts/Layout"
 import createSection from "app/sections/mutations/createSection"
 import { SectionForm, FORM_ERROR } from "app/sections/components/SectionForm"
+import { useState } from "react"
+import Editor from "app/core/components/Editor"
 
 const NewSectionPage = () => {
   const router = useRouter()
   const [createSectionMutation] = useMutation(createSection)
+  const [formContent, setFormContent] = useState('')
   return (
-    <div>
+    <div className="center-div">
       <h1>Create New Section</h1>
-
+      <Editor />
       <SectionForm
         submitText="Create Section" // TODO use a zod schema for form validation
         //  - Tip: extract mutation's schema into a shared `validations.ts` file and
@@ -17,6 +20,7 @@ const NewSectionPage = () => {
         // schema={CreateSection}
         // initialValues={{}}
         onSubmit={async (values) => {
+          values.content = formContent
           try {
             const section = await createSectionMutation(values)
             router.push(
@@ -32,12 +36,20 @@ const NewSectionPage = () => {
           }
         }}
       />
-
       <p>
         <Link href={Routes.SectionsPage()}>
           <a>Sections</a>
         </Link>
       </p>
+      <style jsx>{`
+        .center-div {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          height: 100vh;
+          flex-direction: column;
+        }
+      `}</style>
     </div>
   )
 }

@@ -9,6 +9,7 @@ import { AppBar } from "@mui/material"
 import { Grid } from "@mui/material"
 import logo from "public/cmslogo.svg"
 
+
 const UserInfo = () => {
   const currentUser = useCurrentUser()
   const [logoutMutation] = useMutation(logout)
@@ -27,6 +28,12 @@ const UserInfo = () => {
           Role: <code>{currentUser.role}</code>
           <br />
         </div>
+        <ul>
+          <strong>Admin:</strong>
+          <li><Link href="/sections"><p style={{color: "#FFF", margin: "0", textAlign: "left", textDecoration: "underline", cursor: "pointer"}}>Sections</p></Link></li>
+          <li><Link href="/projects"><p style={{color: "#FFF", margin: "0", textAlign: "left", textDecoration: "underline", cursor: "pointer"}}>Projects</p></Link></li>
+          <br />
+        </ul>
       </>
     )
   } else {
@@ -46,36 +53,24 @@ const UserInfo = () => {
 }
 
 export default function TopHeader(props) {
-  // console.log("props", props)
-
-  // TODO: work on fixing this into one possibly
   const [isOpen, setOpen] = useState(false);
-  const [isActive, setActive] = useState(false);
-  const handleToggle = () => {
-    setActive(!isActive);
-  };
-
   return (
     <>
-      <AppBar position="sticky" style={{minHeight: "11vh", background: "#577ae3", color: "#FFF", position: "relative", "overflow-x": "clip" }}>
+      <AppBar position="sticky" style={{minHeight: "11vh", background: "#577ae3", color: "#FFF", "overflow-x": "clip" }}>
         <Grid container alignItems="center" style={{padding:"10px"}}>
           <Grid item xs={2}>
             <Image layout="responsive" src={logo} alt="blitzjs" />
           </Grid>
           <Grid item xs={9}></Grid>
           <Grid item xs={1}>
-            <Hamburger toggled={isOpen} onToggle={() => isOpen ? setOpen(false) : setOpen() & handleToggle()} />
+            <Hamburger toggled={isOpen} onToggle={() => setOpen(!isOpen)} />
           </Grid>
         </Grid>
-        <div id="menu-container" className={`${isActive ? "slideout" : "slidein"}`}>
+        <div id="menu-container" className={`${isOpen ? "slideout" : "slidein"}`}>
         <Suspense fallback="Loading...">
           <UserInfo />
         </Suspense>
         <ul>
-          <strong>Admin:</strong>
-          <li><Link href="/sections"><p style={{color: "#FFF", margin: "0", textAlign: "left", textDecoration: "underline", cursor: "pointer"}}>Sections</p></Link></li>
-          <li><Link href="/projects"><p style={{color: "#FFF", margin: "0", textAlign: "left", textDecoration: "underline", cursor: "pointer"}}>Projects</p></Link></li>
-          <br />
           <strong>Pages:</strong>
           {props.links.map((link, i) => (
             <li key={i}>
@@ -101,44 +96,21 @@ export default function TopHeader(props) {
            padding: 0;
         }
         #menu-container {
-         //   min-height: 87.6vh;
-         //   overflow-y: hidden;
-         //   height: 100%;
             width: 40%;
             background: #577ae3;
             padding: 10px;
             position: absolute;
             top: 100%;
-         //   right: -30px;
-         //   position: absolute;
-         //   height: auto;
-         //   top: 100%;
             box-shadow: -3px 0px 10px rgba(0,0,0.5,0.5);
+            transition: all 0.25s cubic-bezier(.68,-0.55,.27,1.55);
         }
-        #menu-container.slidein {
-            animation: slidein .25s cubic-bezier(.68,-0.55,.27,1.55) forwards;
+        .slidein {
+          transform: translateX(255%);
         }
-        #menu-container.slideout {
-            animation: slideout .25s cubic-bezier(.68,-0.55,.27,1.55) forwards;
+        .slideout {
+          transform: translateX(155%);
         }
-        @keyframes slidein {
-          from {
-            transform: translateX(150%);
-          }
 
-          to {
-            transform: translateX(255%);
-          }
-        }
-        @keyframes slideout {
-          from {
-            transform: translateX(255%);
-          }
-
-          to {
-            transform: translateX(150%);
-          }
-        }
 
       `}</style>
     </>

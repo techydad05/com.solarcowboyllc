@@ -29,7 +29,7 @@ const Section = (props) => {
   const route = params.slug || ["home"]
   const fullRoute = route.toString().replace(/,/g, "/")
   // todo: fix this to use for sub-routes eventually
-  const [section, {refetch}] = useQuery(getSection, { id: 1 })
+  const [section, {refetch}] = useQuery(getSection, { link: route[0] })
   return <>
     <h1>{fullRoute}</h1>
     {parse(section.content)}
