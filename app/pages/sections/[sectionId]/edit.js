@@ -1,9 +1,11 @@
-import { Suspense } from "react"
+import { Suspense, useState } from "react"
 import { Head, Link, useRouter, useQuery, useMutation, useParam, Routes } from "blitz"
 import Layout from "app/core/layouts/Layout"
 import getSection from "app/sections/queries/getSection"
 import updateSection from "app/sections/mutations/updateSection"
 import { SectionForm, FORM_ERROR } from "app/sections/components/SectionForm"
+import Editor from "app/core/components/Editor"
+
 export const EditSection = () => {
   const router = useRouter()
   const sectionId = useParam("sectionId", "number")
@@ -18,16 +20,17 @@ export const EditSection = () => {
     }
   )
   const [updateSectionMutation] = useMutation(updateSection)
+  const [formContent, setFormContent] = useState('')
   return (
     <>
       <Head>
         <title>Edit Section {section.id}</title>
       </Head>
 
-      <div>
+      <div className="center-div">
         <h1>Edit Section {section.id}</h1>
         <pre>{JSON.stringify(section, null, 2)}</pre>
-
+        <Editor editorUpdate={(e) => setFormContent(e)} />
         <SectionForm
           submitText="Update Section" // TODO use a zod schema for form validation
           //  - Tip: extract mutation's schema into a shared `validations.ts` file and
@@ -35,6 +38,7 @@ export const EditSection = () => {
           // schema={UpdateSection}
           initialValues={section}
           onSubmit={async (values) => {
+            values.content = formContent
             try {
               const updated = await updateSectionMutation({
                 id: section.id,
@@ -55,6 +59,15 @@ export const EditSection = () => {
           }}
         />
       </div>
+      <style jsx>{`
+        .center-div {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          height: 100vh;
+          flex-direction: column;
+        }
+      `}</style>
     </>
   )
 }

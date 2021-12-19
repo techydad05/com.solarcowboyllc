@@ -8,12 +8,12 @@ export function SectionForm(props) {
       <LabeledTextField name="name" label="Name" placeholder="Name" />
       <LabeledTextField name="link" label="Link" placeholder="Link" />
       {/* <LabeledTextField name="content" label="Content" placeholder="Content" /> */}
-      <TextareaAutosize
+      {/* <TextareaAutosize
         name="content"
         label="Content"
         placeholder="Content"
         minRows={5}
-      />
+      /> */}
     </Form>
   )
 }

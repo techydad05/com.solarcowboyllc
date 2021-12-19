@@ -12,7 +12,7 @@ const NewSectionPage = () => {
   return (
     <div className="center-div">
       <h1>Create New Section</h1>
-      <Editor />
+      <Editor editorUpdate={(e) => setFormContent(e)} />
       <SectionForm
         submitText="Create Section" // TODO use a zod schema for form validation
         //  - Tip: extract mutation's schema into a shared `validations.ts` file and

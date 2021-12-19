@@ -2,10 +2,12 @@ import dynamic from 'next/dynamic'
 
 const Editor = dynamic(
   async () => {
-    const ace = await import('react-ace');
-    import('ace-builds/src-noconflict/mode-javascript');
-    import('ace-builds/src-noconflict/theme-twilight');
-    import('ace-builds/src-noconflict/ext-emmet');
+    const ace = await require('react-ace');
+    require('ace-builds/webpack-resolver');
+    require("ace-builds/src-noconflict/ext-language_tools");
+    require('ace-builds/src-noconflict/mode-html');
+    require('ace-builds/src-noconflict/theme-twilight');
+    require('ace-builds/src-noconflict/ext-emmet');
     return ace;
   },
   {
@@ -19,15 +21,27 @@ const Editor = dynamic(
 
 function CodeEditor(props) {
   return (
+    <>
+      {/* figure out how to load this better */}
+      <script src="https://cloud9ide.github.io/emmet-core/emmet.js"></script>
       <Editor
-          {...props}
-          mode="javascript"
+          // {...props}
+          mode="html"
           theme="twilight"
-          onChange={(e) => { console.log(e) }}
+          onChange={props.editorUpdate}
           name="editor01"
           fontSize={21}
-          enableEmmet={true}
+          setOptions={{
+            useWorker: false,
+            enableBasicAutocompletion: true,
+            enableLiveAutocompletion: true,
+            enableSnippets: true,
+            showLineNumbers: true,
+            tabSize: 2,
+            enableEmmet: true,
+          }}
       />
+    </>
   );
 }
 

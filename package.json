@@ -43,10 +43,11 @@
   },
   "devDependencies": {
     "eslint": "7.32.0",
+    "file-loader": "6.2.0",
     "husky": "7.0.4",
     "lint-staged": "11.2.6",
-    "prettier-plugin-prisma": "3.3.0",
     "prettier": "2.4.1",
+    "prettier-plugin-prisma": "3.3.0",
     "pretty-quick": "3.1.1",
     "preview-email": "3.0.5",
     "prisma": "3.4.1"

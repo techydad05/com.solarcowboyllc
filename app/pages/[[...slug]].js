@@ -4,7 +4,7 @@ import Layout from "app/core/layouts/Layout"
 import TopHeader from "app/core/components/TopHeader"
 import db from "db"
 import getProject from "app/projects/queries/getProject"
-import getSection from "app/sections/queries/getSection"
+import getSectionByName from "app/sections/queries/getSectionByName"
 import parse from "html-react-parser"
 
 // This gets called on every request
@@ -29,7 +29,7 @@ const Section = (props) => {
   const route = params.slug || ["home"]
   const fullRoute = route.toString().replace(/,/g, "/")
   // todo: fix this to use for sub-routes eventually
-  const [section, {refetch}] = useQuery(getSection, { link: route[0] })
+  const [section, {refetch}] = useQuery(getSectionByName, { link: route[0] })
   return <>
     <h1>{fullRoute}</h1>
     {parse(section.content)}
