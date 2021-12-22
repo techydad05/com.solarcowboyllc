@@ -6,7 +6,7 @@ import db from "db"
 import getProject from "app/projects/queries/getProject"
 import getSectionByName from "app/sections/queries/getSectionByName"
 import parse from "html-react-parser"
-import { CardMedia } from "@mui/material"
+import { CardMedia, CircularProgress } from "@mui/material"
 
 // This gets called on every request
 export async function getServerSideProps() {
@@ -55,8 +55,10 @@ const Home = (props) => {
         <CardMedia loop autoPlay component="video" src="/slider_scaled_mp4.mp4" />
       </div>
       <main>
-        <Suspense fallback={<div>Loading...</div>}>
-          <div className="main-div"><Section /></div>
+        <Suspense fallback={<div className="progress-div"><CircularProgress /></div>}>
+          <div className="main-div">
+            <Section />
+          </div>
         {/* <Project />
         {(section && (
           <div>
@@ -120,6 +122,13 @@ const Home = (props) => {
           // height: 40vh;
           // overflow: hidden;
           min-height: 30vh;
+        }
+
+        .progress-div {
+          height: 50vh;
+          display: flex;
+          justify-content: center;
+          align-items: center;
         }
 
         main p {
