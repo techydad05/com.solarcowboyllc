@@ -51,8 +51,10 @@ const Home = (props) => {
   return (
     <div className="container">
       <TopHeader links={links} />
-      <main>
+      <div className="video-div">
         <CardMedia loop autoPlay component="video" src="/slider_scaled_mp4.mp4" />
+      </div>
+      <main>
         <Suspense fallback={<div>Loading...</div>}>
           <div className="main-div"><Section /></div>
         {/* <Project />
@@ -82,6 +84,7 @@ const Home = (props) => {
 
       <style jsx global>{`
         @import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100;0,200;0,300;0,400;0,600;0,700;1,300;1,700&display=swap');        html,
+
         body {
           padding: 0;
           margin: 0;
@@ -95,6 +98,7 @@ const Home = (props) => {
           -moz-osx-font-smoothing: grayscale;
           box-sizing: border-box;
         }
+
         .container {
           min-height: 100vh;
           display: flex;
@@ -102,21 +106,20 @@ const Home = (props) => {
           justify-content: center;
           align-items: center;
         }
+
         main {
-          // padding: 5rem 0;
+          padding: 2.5rem .65em;
           flex: 1;
-          display: block;
+          display: flex;
           flex-direction: column;
           justify-content: center;
           align-items: center;
         }
 
-        .main-div {
-          padding: 1px;
-          display: flex;
-          flex-direction: column;
-          align-content: center;
-          justify-content: center;
+        .video-div {
+          // height: 40vh;
+          // overflow: hidden;
+          min-height: 30vh;
         }
 
         main p {
