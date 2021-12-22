@@ -30,7 +30,8 @@ export const EditSection = () => {
       <div className="center-div">
         <h1>Edit Section {section.id}</h1>
         <pre>{JSON.stringify(section, null, 2)}</pre>
-        <Editor editorUpdate={(e) => setFormContent(e)} />
+        <Editor editorUpdate={(e) => setFormContent(e)} defaultValue={section.content} />
+        {/* {JSON.stringify(section)} */}
         <SectionForm
           submitText="Update Section" // TODO use a zod schema for form validation
           //  - Tip: extract mutation's schema into a shared `validations.ts` file and

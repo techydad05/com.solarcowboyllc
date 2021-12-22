@@ -25,12 +25,13 @@ function CodeEditor(props) {
       {/* figure out how to load this better */}
       <script src="https://cloud9ide.github.io/emmet-core/emmet.js"></script>
       <Editor
-          // {...props}
+          {...props}
           mode="html"
           theme="twilight"
           onChange={props.editorUpdate}
           name="editor01"
           fontSize={21}
+          wrapEnabled={true}
           setOptions={{
             useWorker: false,
             enableBasicAutocompletion: true,

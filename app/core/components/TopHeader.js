@@ -79,7 +79,8 @@ export default function TopHeader(props) {
           ))}
         </ul>
       </div>
-      </AppBar>     {/* TODO work on fixing this logic .. better shorthand */}
+      </AppBar>
+      {/* TODO: work on using sass or figuring out the global css cuz its not working */}
       <style jsx global>{`
         .hide {
           opacity: 0;

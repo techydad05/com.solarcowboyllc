@@ -6,6 +6,7 @@ import db from "db"
 import getProject from "app/projects/queries/getProject"
 import getSectionByName from "app/sections/queries/getSectionByName"
 import parse from "html-react-parser"
+import { CardMedia } from "@mui/material"
 
 // This gets called on every request
 export async function getServerSideProps() {
@@ -31,7 +32,7 @@ const Section = (props) => {
   // todo: fix this to use for sub-routes eventually
   const [section, {refetch}] = useQuery(getSectionByName, { link: route[0] })
   return <>
-    <h1>{fullRoute}</h1>
+    {/* <h1>{fullRoute}</h1> */}
     {parse(section.content)}
   </>
 }
@@ -47,12 +48,11 @@ const Home = (props) => {
   })
   const section = sections.find((s) => s.link === route[0])
 
-
-
   return (
     <div className="container">
       <TopHeader links={links} />
       <main>
+        <CardMedia loop autoPlay component="video" src="/slider_1_mp4.mp4" />
         <Suspense fallback={<div>Loading...</div>}>
           <Section />
         {/* <Project />
@@ -103,7 +103,7 @@ const Home = (props) => {
           align-items: center;
         }
         main {
-          padding: 5rem 0;
+          // padding: 5rem 0;
           flex: 1;
           display: flex;
           flex-direction: column;
