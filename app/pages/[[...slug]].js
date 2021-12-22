@@ -52,7 +52,7 @@ const Home = (props) => {
     <div className="container">
       <TopHeader links={links} />
       <div className="video-div">
-        <CardMedia loop autoPlay component="video" src="/slider_scaled_mp4.mp4" />
+        <CardMedia playsinline muted loop autoPlay component="video" src="/slider_scaled_mp4.mp4" />
       </div>
       <main>
         <Suspense fallback={<div className="progress-div"><CircularProgress /></div>}>
@@ -93,6 +93,7 @@ const Home = (props) => {
           font-family: 'Josefin Sans', sans-serif !important;
           font-weight: 300 !important;
           font-size: 24px;
+          overflow-x: hidden;
         }
 
         * {
