@@ -54,7 +54,7 @@ const Home = (props) => {
       <main>
         <CardMedia loop autoPlay component="video" src="/slider_1_mp4.mp4" />
         <Suspense fallback={<div>Loading...</div>}>
-          <Section />
+          <div className="main-div"><Section /></div>
         {/* <Project />
         {(section && (
           <div>
@@ -105,10 +105,18 @@ const Home = (props) => {
         main {
           // padding: 5rem 0;
           flex: 1;
-          display: flex;
+          display: block;
           flex-direction: column;
           justify-content: center;
           align-items: center;
+        }
+
+        .main-div {
+          padding: 1px;
+          display: flex;
+          flex-direction: column;
+          align-content: center;
+          justify-content: center;
         }
 
         main p {
