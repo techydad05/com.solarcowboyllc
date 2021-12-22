@@ -52,7 +52,7 @@ const Home = (props) => {
     <div className="container">
       <TopHeader links={links} />
       <main>
-        <CardMedia loop autoPlay component="video" src="/slider_1_mp4.mp4" />
+        <CardMedia loop autoPlay component="video" src="/slider_scaled_mp4.mp4" />
         <Suspense fallback={<div>Loading...</div>}>
           <div className="main-div"><Section /></div>
         {/* <Project />
@@ -85,8 +85,8 @@ const Home = (props) => {
         body {
           padding: 0;
           margin: 0;
-          font-family: 'Josefin Sans', sans-serif;
-          font-weight: 300;
+          font-family: 'Josefin Sans', sans-serif !important;
+          font-weight: 300 !important;
           font-size: 24px;
         }
 
