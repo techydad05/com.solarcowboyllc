@@ -52,7 +52,7 @@ const Home = (props) => {
     <div className="container">
       <TopHeader links={links} />
       <div className="video-div">
-        <CardMedia playsInline muted loop autoPlay component="video" src="/slider_new_1.mp4" />
+        <CardMedia playsInline muted loop autoPlay component="video" src="/slider_new_1.3.mp4" />
       </div>
       <main>
         <Suspense fallback={<div className="progress-div"><CircularProgress /></div>}>
