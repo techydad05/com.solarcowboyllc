@@ -52,25 +52,13 @@ const Home = (props) => {
     <div className="container">
       <TopHeader links={links} />
       <div className="video-div">
-        <CardMedia playsInline muted loop autoPlay component="video" src="/slider_scaled_mp4.mp4" />
+        <CardMedia playsInline muted loop autoPlay component="video" src="/slider_new_1.mp4" />
       </div>
       <main>
         <Suspense fallback={<div className="progress-div"><CircularProgress /></div>}>
           <div className="main-div">
             <Section />
           </div>
-        {/* <Project />
-        {(section && (
-          <div>
-            <div id="content">
-                {section.content || <p>default content</p>}
-            </div>
-          </div>
-        )) || (
-          <div id="404">
-            <p><strong>404</strong> | you have tried to view a page that does not exist</p>
-          </div>
-        )} */}
         </Suspense>
       </main>
 
@@ -80,7 +68,7 @@ const Home = (props) => {
           target="_blank"
           rel="noopener noreferrer"
         >
-          Powered by IvanM
+          Powered by IvanM & BlitzJS
         </a>
       </footer>
 
