@@ -7,6 +7,7 @@ export function SectionForm(props) {
     <Form {...props}>
       <LabeledTextField name="name" label="Name" placeholder="Name" />
       <LabeledTextField name="link" label="Link" placeholder="Link" />
+      <LabeledTextField name="video" label="Video" placeholder="Video" />
       {/* <LabeledTextField name="content" label="Content" placeholder="Content" /> */}
       {/* <TextareaAutosize
         name="content"

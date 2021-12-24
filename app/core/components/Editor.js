@@ -32,6 +32,7 @@ function CodeEditor(props) {
           name="editor01"
           fontSize={21}
           wrapEnabled={true}
+          defaultValue={props.content}
           setOptions={{
             useWorker: false,
             enableBasicAutocompletion: true,

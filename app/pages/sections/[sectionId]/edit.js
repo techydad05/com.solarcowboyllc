@@ -1,5 +1,5 @@
 import { Suspense, useState } from "react"
-import { Head, Link, useRouter, useQuery, useMutation, useParam, Routes } from "blitz"
+import { Head, Link, useRouter, useQuery, useMutation, useParam, Routes, Script } from "blitz"
 import Layout from "app/core/layouts/Layout"
 import getSection from "app/sections/queries/getSection"
 import updateSection from "app/sections/mutations/updateSection"
@@ -22,17 +22,18 @@ export const EditSection = () => {
   )
   const [updateSectionMutation] = useMutation(updateSection)
   // added this to set content before form submit
-  const [formContent, setFormContent] = useState('')
+  const [formContent, setFormContent] = useState(section.content)
   const [submitting, setSubmitting] = useState(false)
   return (
     <>
       <Head>
         <title>Edit Section {section.id}</title>
       </Head>
+      <Script src="https://cloud9ide.github.io/emmet-core/emmet.js" strategy="afterInteractive" />
       <div className="center-div">
         {submitting ? <div className="submit-progress"><CircularProgress /></div> : null}
         <h1>Edit Section {section.id}</h1>
-        <Editor width="100%" editorUpdate={(e) => setFormContent(e)} defaultValue={section.content} />
+        <Editor width="100%" editorUpdate={(e) => setFormContent(e)} content={formContent} />
         <h3 style={{padding: 0, marginBottom: 0}}>Section ID: {section.id}</h3>
         <h3 style={{padding: 0, marginBottom: 0}}>Created: {new Date(section.createdAt).toLocaleString("en-US")}</h3>
         <h3 style={{padding: 0}}>Updated: {new Date(section.updatedAt).toLocaleString("en-US")}</h3>

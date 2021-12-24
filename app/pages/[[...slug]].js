@@ -7,6 +7,7 @@ import getProject from "app/projects/queries/getProject"
 import getSectionByName from "app/sections/queries/getSectionByName"
 import parse from "html-react-parser"
 import { CardMedia, CircularProgress } from "@mui/material"
+import EmailJS from "app/core/components/EmailJS"
 import theme from "theme"
 
 // This gets called on every request
@@ -17,24 +18,37 @@ export async function getServerSideProps() {
   return { props: { sections } }
 }
 
-function Project() {
-  const [project, {refetch}] = useQuery(getProject, { id: 1 })
-  // console.log("project:", JSON.stringify(project, null, 2))
-  // console.log("refetch:", refetch)
-  return <>
-    <h1>{project.name}</h1>
-  </>
+const NoDataPage = () => {
+  return <div className="no-data-container">
+      <p>
+        No data, If you have access to admin priveleges
+        you can simply <Link href="/login">create an account</Link> and wait for Admin
+        access and then you can create sections and edit html content in the new section.
+      </p>
+    </div>
 }
+
 
 const Section = (props) => {
   const params = useParams()
   const route = params.slug || ["home"]
-  const fullRoute = route.toString().replace(/,/g, "/")
   // todo: fix this to use for sub-routes eventually
-  const [section, {refetch}] = useQuery(getSectionByName, { link: route[0] })
+  // const fullRoute = route.toString().replace(/,/g, "/")
+  try {
+    const [section, {refetch}] = useQuery(getSectionByName, { link: route[0] })
+  } catch (error) {
+    console.log("error:", error)
+    return <NoDataPage />
+  }
   return <>
-    {/* <h1>{fullRoute}</h1> */}
-    {parse(section.content)}
+    {/* {section.video ? <div className="video-div">
+        <CardMedia playsInline muted loop autoPlay component="video" src="/slider_new_1.3.mp4" />
+      </div> : null} */}
+    <main>
+      <div className="main-div">
+        {section ? parse(section.content) : null}
+      </div>
+    </main>
   </>
 }
 
@@ -47,22 +61,16 @@ const Home = (props) => {
   const links = sections.map((section) => {
     return { name: section.name, slug: section.link }
   })
-  const section = sections.find((s) => s.link === route[0])
+  // const section = sections.find((s) => s.link === route[0])
 
   return (
     <div className="container">
       <TopHeader links={links} />
-      <div className="video-div">
-        <CardMedia playsInline muted loop autoPlay component="video" src="/slider_new_1.3.mp4" />
-      </div>
-      <main>
         <Suspense fallback={<div className="progress-div"><CircularProgress /></div>}>
-          <div className="main-div">
-            <Section />
-          </div>
+          <Section />
+          {/* TODO: move this to section? */}
+          <EmailJS isData={props.sections.length > 0} />
         </Suspense>
-      </main>
-
       <footer style={{background: theme.palette.primary.main}}>
         <a
           href="https://blitzjs.com?utm_source=blitz-new&utm_medium=app-template&utm_campaign=blitz-new"
@@ -99,6 +107,10 @@ const Home = (props) => {
           align-items: center;
         }
 
+        .main-div {
+          min-heigth: 60vh;
+        }
+
         main {
           padding: 2.5rem .65em;
           flex: 1;
@@ -108,17 +120,19 @@ const Home = (props) => {
           align-items: center;
         }
 
-        .video-div {
-          // height: 40vh;
-          // overflow: hidden;
-          min-height: 30vh;
-        }
-
         .progress-div {
-          height: 50vh;
+          min-height: 79vh;
           display: flex;
           justify-content: center;
           align-items: center;
+        }
+
+        .no-data-container {
+          min-height: 76.5vh;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          flex-direction: column;
         }
 
         button {

@@ -14,7 +14,7 @@ import theme from "theme"
 
 // TODO: working on getting section for topheader and using it in here
 // right now Im just using conditional to get logo
-import logo from "public/logo.jpg"
+// import logo from "public/logo.jpg"
 
 
 const UserInfo = () => {
