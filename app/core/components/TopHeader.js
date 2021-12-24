@@ -14,6 +14,8 @@ import theme from "theme"
 
 // TODO: working on getting section for topheader and using it in here
 // right now Im just using conditional to get logo
+// this is for the website im working on... remove it when the final save
+// for version 1 of this is done
 // import logo from "public/logo.jpg"
 
 
@@ -84,7 +86,7 @@ export default function TopHeader(props) {
               <MenuLinks links={props.links} />
               {/* TAKE OUT! this is for this site only */}
               <div className="links">
-                <Link href="tel:#">867-5309</Link>
+                <Link href="tel:#">867-53099</Link>
               </div>
               <div className="links">
                 <Button variant="contained" style={{color: "#FFF !important"}} href="tel:#">Get Estimate</Button>
