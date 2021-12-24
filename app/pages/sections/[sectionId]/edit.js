@@ -5,6 +5,7 @@ import getSection from "app/sections/queries/getSection"
 import updateSection from "app/sections/mutations/updateSection"
 import { SectionForm, FORM_ERROR } from "app/sections/components/SectionForm"
 import Editor from "app/core/components/Editor"
+import { CircularProgress } from "@mui/material"
 
 export const EditSection = () => {
   const router = useRouter()
@@ -20,18 +21,21 @@ export const EditSection = () => {
     }
   )
   const [updateSectionMutation] = useMutation(updateSection)
+  // added this to set content before form submit
   const [formContent, setFormContent] = useState('')
+  const [submitting, setSubmitting] = useState(false)
   return (
     <>
       <Head>
         <title>Edit Section {section.id}</title>
       </Head>
-
       <div className="center-div">
+        {submitting ? <div className="submit-progress"><CircularProgress /></div> : null}
         <h1>Edit Section {section.id}</h1>
-        <pre>{JSON.stringify(section, null, 2)}</pre>
-        <Editor editorUpdate={(e) => setFormContent(e)} defaultValue={section.content} />
-        {/* {JSON.stringify(section)} */}
+        <Editor width="100%" editorUpdate={(e) => setFormContent(e)} defaultValue={section.content} />
+        <h3 style={{padding: 0, marginBottom: 0}}>Section ID: {section.id}</h3>
+        <h3 style={{padding: 0, marginBottom: 0}}>Created: {new Date(section.createdAt).toLocaleString("en-US")}</h3>
+        <h3 style={{padding: 0}}>Updated: {new Date(section.updatedAt).toLocaleString("en-US")}</h3>
         <SectionForm
           submitText="Update Section" // TODO use a zod schema for form validation
           //  - Tip: extract mutation's schema into a shared `validations.ts` file and
@@ -40,6 +44,7 @@ export const EditSection = () => {
           initialValues={section}
           onSubmit={async (values) => {
             values.content = formContent
+            setSubmitting(true)
             try {
               const updated = await updateSectionMutation({
                 id: section.id,
@@ -53,21 +58,43 @@ export const EditSection = () => {
               )
             } catch (error) {
               console.error(error)
+              setSubmitting(false)
               return {
                 [FORM_ERROR]: error.toString(),
               }
             }
           }}
         />
+        <p>
+        <Link href={Routes.SectionsPage()}>
+          <a>Back to Sections</a>
+        </Link>
+      </p>
       </div>
       <style jsx>{`
-        .center-div {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          height: 100vh;
-          flex-direction: column;
-        }
+      #editor01 {
+        width: 100% !important;
+      }
+      .center-div {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: center;
+        padding: 1rem;
+      }
+      .submit-progress {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 100vh;
+        position: fixed;
+        background-color: #FFF;
+        opacity: 0.7;
+        top: 0;
+        left: 0;
+        z-index: 99;
+      }
       `}</style>
     </>
   )
@@ -79,12 +106,6 @@ const EditSectionPage = () => {
       <Suspense fallback={<div>Loading...</div>}>
         <EditSection />
       </Suspense>
-
-      <p>
-        <Link href={Routes.SectionsPage()}>
-          <a>Sections</a>
-        </Link>
-      </p>
     </div>
   )
 }

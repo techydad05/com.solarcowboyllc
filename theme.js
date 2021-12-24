@@ -1,5 +1,5 @@
 import { createTheme } from '@mui/material/styles';
-import { blue, indigo, red } from '@mui/material/colors';
+import { blue, indigo, red, green } from '@mui/material/colors';
 import darkScrollbar from '@mui/material/darkScrollbar';
 
 const defaultTheme = createTheme()
@@ -15,7 +15,7 @@ const theme = createTheme({
   },
   palette: {
     primary: {
-      main: indigo.A200,
+      main: green.A700,
     },
     secondary: {
       main: blue[500],
@@ -23,6 +23,13 @@ const theme = createTheme({
     error: {
       main: red[100],
     },
+    menuContainer: "#FFFFFF",
+  },
+  text: {
+    primary: {
+      dark: '#000000',
+      light: '#FFFFFF',
+    }
   },
 });
 

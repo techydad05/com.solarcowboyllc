@@ -7,6 +7,7 @@ import getProject from "app/projects/queries/getProject"
 import getSectionByName from "app/sections/queries/getSectionByName"
 import parse from "html-react-parser"
 import { CardMedia, CircularProgress } from "@mui/material"
+import theme from "theme"
 
 // This gets called on every request
 export async function getServerSideProps() {
@@ -62,7 +63,7 @@ const Home = (props) => {
         </Suspense>
       </main>
 
-      <footer>
+      <footer style={{background: theme.palette.primary.main}}>
         <a
           href="https://blitzjs.com?utm_source=blitz-new&utm_medium=app-template&utm_campaign=blitz-new"
           target="_blank"
@@ -120,6 +121,18 @@ const Home = (props) => {
           align-items: center;
         }
 
+        button {
+          padding: 7px 16px 3px 16px !important;
+          color: #fff !important;
+          font-family: "Josefin Sans", sans-serif !important;
+        }
+
+        #menu-container a {
+          padding: 7px 16px 3px 16px !important;
+          color: #fff !important;
+          font-family: "Josefin Sans", sans-serif !important;
+        }
+
         main p {
           font-size: 1.2rem;
         }
@@ -135,7 +148,7 @@ const Home = (props) => {
           display: flex;
           justify-content: center;
           align-items: center;
-          background-color: #45009d;
+          background-color: #43AF3A;
         }
 
         footer a {
