@@ -3,29 +3,29 @@ import { useEffect } from "react"
 
 const EmailJS = (props) => {
   useEffect(() => {
-    if (props.isData) {
-      emailjs.init('user_sfHHqVix3VlKerTBKwc66')
-      const btn = document.getElementById('button');
+    // if (props.isData) {
+    //   emailjs.init('user_sfHHqVix3VlKerTBKwc66')
+    //   const btn = document.getElementById('button');
 
-      document.getElementById('form')
-      .addEventListener('submit', function(event) {
-        event.preventDefault();
+    //   document.getElementById('form')
+    //   .addEventListener('submit', function(event) {
+    //     event.preventDefault();
 
-        btn.value = 'Sending...';
+    //     btn.value = 'Sending...';
 
-        const serviceID = 'default_service';
-        const templateID = 'template_8tfe3th';
+    //     const serviceID = 'default_service';
+    //     const templateID = 'template_8tfe3th';
 
-        emailjs.sendForm(serviceID, templateID, this)
-          .then(() => {
-            btn.value = 'Send Email';
-            alert('Sent!');
-          }, (err) => {
-            btn.value = 'Send Email';
-            alert(JSON.stringify(err));
-          });
-      });
-    }
+    //     emailjs.sendForm(serviceID, templateID, this)
+    //       .then(() => {
+    //         btn.value = 'Send Email';
+    //         alert('Sent!');
+    //       }, (err) => {
+    //         btn.value = 'Send Email';
+    //         alert(JSON.stringify(err));
+    //       });
+    //   });
+    // }
   })
   return (
     <>

@@ -36,11 +36,7 @@ const Section = (props) => {
   // const fullRoute = route.toString().replace(/,/g, "/")
   try {
     const [section, {refetch}] = useQuery(getSectionByName, { link: route[0] })
-  } catch (error) {
-    console.log("error:", error)
-    return <NoDataPage />
-  }
-  return <>
+    return <>
     {/* {section.video ? <div className="video-div">
         <CardMedia playsInline muted loop autoPlay component="video" src="/slider_new_1.3.mp4" />
       </div> : null} */}
@@ -50,6 +46,10 @@ const Section = (props) => {
       </div>
     </main>
   </>
+  } catch (error) {
+    console.log("error:", error)
+    return <NoDataPage />
+  }
 }
 
 
