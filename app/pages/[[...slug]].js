@@ -42,7 +42,7 @@ const Section = (props) => {
     return <>
       {section.video ? <div className="video-div">
         <ReactPlayer width={"100%"} className="video-player" url={`${section.video}`} wrapper={'p'} loop muted playing playsinline />
-        </div> : <CircularProgress />}
+        </div> : null}
       <main>
         <div className="main-div">
           {section ? parse(section.content) : null}
