@@ -39,6 +39,7 @@
     "react-ace": "9.5.0",
     "react-dom": "18.0.0-alpha-5ca4b0433-20211020",
     "react-final-form": "6.5.7",
+    "react-player": "2.9.0",
     "sass": "1.43.4",
     "zod": "3.11.6"
   },
