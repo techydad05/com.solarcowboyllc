@@ -8,23 +8,26 @@ import getSectionByName from "app/sections/queries/getSectionByName"
 import parse from "html-react-parser"
 import { CardMedia, CircularProgress } from "@mui/material"
 import EmailJS from "app/core/components/EmailJS"
+import ReactPlayer from "react-player/lazy"
 import theme from "theme"
 
 // This gets called on every request
 export async function getServerSideProps() {
-  const sections = await db.section.findMany()
-  // console.log(sections)
-  // Pass projects to the page via props
-  return { props: { sections } }
+  // get section not including top-header
+  const sections = await db.section.findMany({ where: { link: { not: "top-header" }}})
+  // get top-header
+  const topHeader = await db.section.findFirst({ where: { link: "top-header" }})
+  // Pass sections and topheader? to the page via props
+  return { props: { sections: sections, topHeader: topHeader } }
 }
 
+
+// TODO: work on setting this to show a different page
+// when no data is available at all
+// work on making the loading more instant on clicking the link
 const NoDataPage = () => {
   return <div className="no-data-container">
-      <p>
-        No data, If you have access to admin priveleges
-        you can simply <Link href="/login">create an account</Link> and wait for Admin
-        access and then you can create sections and edit html content in the new section.
-      </p>
+      <CircularProgress color="warning" />
     </div>
 }
 
@@ -37,15 +40,15 @@ const Section = (props) => {
   try {
     const [section, {refetch}] = useQuery(getSectionByName, { link: route[0] })
     return <>
-    {/* {section.video ? <div className="video-div">
-        <CardMedia playsInline muted loop autoPlay component="video" src="/slider_new_1.3.mp4" />
-      </div> : null} */}
-    <main>
-      <div className="main-div">
-        {section ? parse(section.content) : null}
-      </div>
-    </main>
-  </>
+      {section.video ? <div className="video-div">
+        <ReactPlayer width={"100%"} className="video-player" url={`${section.video}`} wrapper={'p'} loop muted playing playsinline />
+        </div> : <CircularProgress />}
+      <main>
+        <div className="main-div">
+          {section ? parse(section.content) : null}
+        </div>
+      </main>
+    </>
   } catch (error) {
     console.log("error:", error)
     return <NoDataPage />
@@ -54,21 +57,17 @@ const Section = (props) => {
 
 
 const Home = (props) => {
-  const params = useParams()
-  const route = params.slug || ["home"]
-  const sections = props.sections
   //TODO: *** work on fixing for nested routes
-  const links = sections.map((section) => {
+  const links = props.sections.map((section) => {
     return { name: section.name, slug: section.link }
   })
-  // const section = sections.find((s) => s.link === route[0])
 
   return (
     <div className="container">
-      <TopHeader links={links} />
+      <TopHeader links={links} topHeaderSection={props.topHeader} />
         <Suspense fallback={<div className="progress-div"><CircularProgress /></div>}>
           <Section />
-          {/* TODO: move this to section? */}
+          {/* TODO: move this to section check if has form in it? */}
           <EmailJS isData={props.sections.length > 0} />
         </Suspense>
       <footer style={{background: theme.palette.primary.main}}>
@@ -109,6 +108,15 @@ const Home = (props) => {
 
         .main-div {
           min-heigth: 60vh;
+        }
+
+        .video-player {
+          height: 100% !important;
+          margin: 0 !important;
+        }
+
+        .video-div {
+          width: 100%;
         }
 
         main {
