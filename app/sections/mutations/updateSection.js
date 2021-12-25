@@ -6,6 +6,7 @@ const UpdateSection = z.object({
   name: z.string(),
   link: z.string(),
   content: z.string(),
+  video: z.string().optional(),
 })
 export default resolver.pipe(
   resolver.zod(UpdateSection),

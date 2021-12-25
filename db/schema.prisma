@@ -78,5 +78,5 @@ model Section {
   name      String
   link      String   @default("")
   content   String   @default("")
-  video   String   @default("")
+  video     String   @default("")
 }

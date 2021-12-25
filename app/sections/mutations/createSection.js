@@ -5,6 +5,7 @@ const CreateSection = z.object({
   name: z.string(),
   link: z.string(),
   content: z.string(),
+  video: z.string().optional(),
 })
 export default resolver.pipe(resolver.zod(CreateSection), resolver.authorize(), async (input) => {
   // TODO: in multi-tenant app, you must add validation to ensure correct tenant
