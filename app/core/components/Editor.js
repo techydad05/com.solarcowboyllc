@@ -11,7 +11,6 @@ const Editor = dynamic(
     return ace;
   },
   {
-    // eslint-disable-next-line react/display-name
     loading: () => (
       <p>Loading...</p>
     ),
