@@ -7,6 +7,7 @@ const UpdateSection = z.object({
   link: z.string(),
   content: z.string(),
   video: z.string().optional(),
+  form: z.boolean(),
 })
 export default resolver.pipe(
   resolver.zod(UpdateSection),

@@ -1,37 +1,23 @@
-import Script from "next/script"
 import { useEffect } from "react"
+import emailjs from "emailjs-com"
 
-const EmailJS = (props) => {
-  useEffect(() => {
-    // if (props.isData) {
-    //   emailjs.init('user_sfHHqVix3VlKerTBKwc66')
-    //   const btn = document.getElementById('button');
-
-    //   document.getElementById('form')
-    //   .addEventListener('submit', function(event) {
-    //     event.preventDefault();
-
-    //     btn.value = 'Sending...';
-
-    //     const serviceID = 'default_service';
-    //     const templateID = 'template_8tfe3th';
-
-    //     emailjs.sendForm(serviceID, templateID, this)
-    //       .then(() => {
-    //         btn.value = 'Send Email';
-    //         alert('Sent!');
-    //       }, (err) => {
-    //         btn.value = 'Send Email';
-    //         alert(JSON.stringify(err));
-    //       });
-    //   });
-    // }
-  })
-  return (
-    <>
-      <Script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js" strategy="beforeInteractive" />
-    </>
-  )
+export default function EmailJS(props) {
+  console.log("Loading EmailJS")
+  var form = document.getElementById('form')
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const formData = {
+      'from_name': this[0].value,
+      'from_phone': this[1].value,
+      'from_email': this[2].value,
+      'message': this[3].value
+    };
+    emailjs.send('default_service','template_8tfe3th', formData, props.formUserID)
+      .then((response) => {
+        console.log('SUCCESS!', response.status, response.text);
+      }, (err) => {
+        console.log('FAILED...', err);
+      });
+      e.target.reset();
+  });
 }
-
-export default EmailJS

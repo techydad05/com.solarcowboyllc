@@ -1,4 +1,4 @@
-import { Suspense } from "react"
+import { Suspense, useState } from "react"
 import { Image, Link, useMutation, Routes, useParams, useQuery } from "blitz"
 import Layout from "app/core/layouts/Layout"
 import TopHeader from "app/core/components/TopHeader"
@@ -7,18 +7,32 @@ import getProject from "app/projects/queries/getProject"
 import getSectionByName from "app/sections/queries/getSectionByName"
 import parse from "html-react-parser"
 import { CardMedia, CircularProgress } from "@mui/material"
-import EmailJS from "app/core/components/EmailJS"
+// import EmailJS from "app/core/components/EmailJS"
 import ReactPlayer from "react-player/lazy"
 import theme from "theme"
+import { dynamic } from "blitz"
+
+const EmailJS = dynamic(
+  () => import("app/core/components/EmailJS"),
+  { ssr: false }
+)
 
 // This gets called on every request
-export async function getServerSideProps() {
+export async function getServerSideProps(props) {
+  const route = props.params.slug || ["home"]
+  // TODO: would using findUnique or using the mutations be better?
+  const section = await db.section.findFirst({ where: { link: route[0] }})
   // get section not including top-header
   const sections = await db.section.findMany({ where: { link: { not: "top-header" }}})
   // get top-header
   const topHeader = await db.section.findFirst({ where: { link: "top-header" }})
   // Pass sections and topheader? to the page via props
-  return { props: { sections: sections, topHeader: topHeader } }
+  return { props: {
+    sections: sections,
+    section: section,
+    topHeader: topHeader,
+    formUserID: process.env.FORM_USER_ID
+  } }
 }
 
 
@@ -34,6 +48,7 @@ const NoDataPage = () => {
 
 const Section = (props) => {
   const params = useParams()
+  const formId = process.env.FORM_ID
   const route = params.slug || ["home"]
   // todo: fix this to use for sub-routes eventually
   // const fullRoute = route.toString().replace(/,/g, "/")
@@ -41,7 +56,7 @@ const Section = (props) => {
     const [section, {refetch}] = useQuery(getSectionByName, { link: route[0] })
     return <>
       {section.video ? <div className="video-div">
-        <ReactPlayer width={"100%"} className="video-player" url={`${section.video}`} wrapper={'p'} loop muted playing playsinline />
+        <ReactPlayer fallback={<CircularProgress />} width={"100%"} className="video-player" url={`${section.video}`} wrapper={'p'} loop muted playing playsinline />
         </div> : null}
       <main>
         <div className="main-div">
@@ -61,14 +76,23 @@ const Home = (props) => {
   const links = props.sections.map((section) => {
     return { name: section.name, slug: section.link }
   })
+  const [sectionFocus, setSectionFocus] = useState(false)
+  const checkFormFocused = (target) => {
+    if (target.parentNode.parentNode.id === "form") {
+      setSectionFocus(true)
+    }
+  }
 
   return (
     <div className="container">
       <TopHeader links={links} topHeaderSection={props.topHeader} />
         <Suspense fallback={<div className="progress-div"><CircularProgress /></div>}>
-          <Section />
-          {/* TODO: move this to section check if has form in it? */}
-          <EmailJS isData={props.sections.length > 0} />
+          <div onClick={(e) => checkFormFocused(e.target)}>
+            <Section />
+          </div>
+          {/* TODO: work on fixing this into having multiple sections per page
+          and figuring out why I cant get it to load dynamically after daya is present */}
+          {sectionFocus ? <EmailJS formUserID={props.formUserID} form={props.section.form} /> : null}
         </Suspense>
       <footer style={{background: theme.palette.primary.main}}>
         <a

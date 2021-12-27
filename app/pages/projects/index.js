@@ -60,7 +60,7 @@ const ProjectsPage = () => {
       <Head>
         <title>Projects</title>
       </Head>
-      <Link href="/">Home</Link>
+
       <div>
         <p>
           <Link href={Routes.NewProjectPage()}>

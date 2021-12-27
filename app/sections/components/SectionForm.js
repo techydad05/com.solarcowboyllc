@@ -1,20 +1,20 @@
-import { TextareaAutosize } from "@mui/core"
 import { Form } from "app/core/components/Form"
 import { LabeledTextField } from "app/core/components/LabeledTextField"
+import { Field } from "react-final-form"
+import { Switch, TextField } from "@mui/material"
+import { custom } from "zod"
+
 export { FORM_ERROR } from "app/core/components/Form"
 export function SectionForm(props) {
   return (
     <Form {...props}>
-      <LabeledTextField name="name" label="Name" placeholder="Name" />
-      <LabeledTextField name="link" label="Link" placeholder="Link" />
-      <LabeledTextField name="video" label="Video" placeholder="Video" />
-      {/* <LabeledTextField name="content" label="Content" placeholder="Content" /> */}
-      {/* <TextareaAutosize
-        name="content"
-        label="Content"
-        placeholder="Content"
-        minRows={5}
-      /> */}
+      {/* using this to figure out how to pass data and use custom fields */}
+      {JSON.stringify(props, null, 2)}
+      <hr /><br />
+      <Field name="name" placeholder="Section Name" type="text" component={(e) => <TextField {...e.input} initialValue={props.initialValues.name} />} />
+      <Field name="link" placeholder="Section Link" type="text" component={(e) => <TextField {...e.input} initialValue={props.initialValues.link} />} />
+      <Field name="video" placeholder="Video URL" type="text" component={(e) => <TextField {...e.input} initialValue={props.initialValues.video} />} />
+      <Field name="form" type="checkbox" component={(e) => <Switch {...e.input} value={props.initialValues.form} />} />
     </Form>
   )
 }

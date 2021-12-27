@@ -1,5 +1,7 @@
 import { Suspense, useState } from "react"
 import { Head, Link, useRouter, useQuery, useMutation, useParam, Routes, Script } from "blitz"
+// TODO: work on fixing this up to have the correct theme
+// also using the same layout for everything with mui framework
 import Layout from "app/core/layouts/Layout"
 import getSection from "app/sections/queries/getSection"
 import updateSection from "app/sections/mutations/updateSection"
@@ -33,7 +35,7 @@ export const EditSection = () => {
       <div className="center-div">
         {submitting ? <div className="submit-progress"><CircularProgress /></div> : null}
         <h1>Edit Section {section.id}</h1>
-        <Editor width="100%" editorUpdate={(e) => setFormContent(e)} content={formContent} />
+        <Editor height="200px" width="100%" editorUpdate={(e) => setFormContent(e)} content={formContent} />
         <h3 style={{padding: 0, marginBottom: 0}}>Section ID: {section.id}</h3>
         <h3 style={{padding: 0, marginBottom: 0}}>Created: {new Date(section.createdAt).toLocaleString("en-US")}</h3>
         <h3 style={{padding: 0}}>Updated: {new Date(section.updatedAt).toLocaleString("en-US")}</h3>

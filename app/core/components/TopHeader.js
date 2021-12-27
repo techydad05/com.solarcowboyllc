@@ -7,16 +7,10 @@ import Hamburger from "hamburger-react"
 import Button from "@mui/material/Button"
 import { AppBar } from "@mui/material"
 import { Grid } from "@mui/material"
-import cmslogo from "public/cmslogo.svg"
+import logo from "public/cmslogo.svg"
 
 // TODO: work on using the them in every area it makes sense
 import theme from "theme"
-
-// TODO: working on getting section for topheader and using it in here
-// right now Im just using conditional to get logo
-// this is for the website im working on... remove it when the final save
-// for version 1 of this is done
-// import logo from "public/logo.jpg"
 
 
 const UserInfo = () => {
@@ -79,19 +73,18 @@ export default function TopHeader(props) {
       <AppBar position="sticky" style={{background: theme.palette.primary.main, color: "#000", "overflow-x": "clip" }}>
         <Grid container alignItems="center" style={{padding:"10px"}}>
           <Grid item xs={2}>
-            <Image width={"150px"} height={"110px"} src={(typeof logo === "undefined") ? cmslogo : logo} alt="blitzjs" />
+            {/* TODO: work on setting up topheader section to its own db object
+            for image and other things */}
+            <Image layout="responsive" src={props.topHeaderSection ? props.topHeaderSection.logo : logo} alt="blitzjs" />
           </Grid>
           <Grid item xs={9} md={10}>
-            <Grid className="header-links" container sx={{display: {xs: "none", md: "flex"}}}>
-              <MenuLinks links={props.links} />
-              {/* TAKE OUT! this is for this site only */}
-              <div className="links">
-                <Link href="tel:#">867-53099</Link>
-              </div>
-              <div className="links">
-                <Button variant="contained" style={{color: "#FFF !important"}} href="tel:#">Get Estimate</Button>
-              </div>
-              {/* TAKE OUT! this is for this site only */}
+            <Grid container justifyContent={"flex-end"}>
+              <Grid className="header-links" fluid={"true"} item sx={{display: {xs: "none", md: "flex"}}}>
+                <MenuLinks links={props.links} />
+              </Grid>
+              <Grid fluid={"true"} item>
+                {props.topHeaderSection ? props.topHeaderSection.content : null}
+              </Grid>
             </Grid>
           </Grid>
           <Grid item xs={1} sx={{ display: {xl: "none", lg: "none", md: "none"}}}>
@@ -106,6 +99,9 @@ export default function TopHeader(props) {
           <strong>Pages:</strong>
           <MenuLinks links={props.links} />
         </ul>
+        <Grid fluid={"true"} item>
+          {props.topHeaderSection ? props.topHeaderSection.content : null}
+        </Grid>
       </div>
       </AppBar>
       {/* TODO: work on using sass or figuring out the global css cuz its not working */}
@@ -123,7 +119,7 @@ export default function TopHeader(props) {
         }
         .header-links .links{
           margin-right: 10px;
-          padding-top: 4px;
+          // padding-top: 4px;
         }
         .header-links .links:last-child {
           padding-top: 0;
