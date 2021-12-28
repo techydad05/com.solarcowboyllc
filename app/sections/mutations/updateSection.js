@@ -1,6 +1,7 @@
 import { resolver } from "blitz"
 import db from "db"
 import { z } from "zod"
+
 const UpdateSection = z.object({
   id: z.number(),
   name: z.string(),

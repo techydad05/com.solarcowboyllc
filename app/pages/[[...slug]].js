@@ -1,4 +1,4 @@
-import { Suspense, useState, useEffect, useRef } from "react"
+import { Suspense, useState, useEffect } from "react"
 import Layout from "app/core/layouts/Layout"
 import TopHeader from "app/core/components/TopHeader"
 import db from "db"
@@ -10,7 +10,7 @@ import { dynamic, useRouter } from "blitz"
 import Page404 from "./404"
 import NProgress from "nprogress"
 import "nprogress/nprogress.css"
-import getSectionByName from "app/sections/queries/getSectionByName"
+// import getSectionByName from "app/sections/queries/getSectionByName"
 
 // TODO: work on figuring out how to do this the correct way?
 const EmailJS = dynamic(
@@ -25,75 +25,47 @@ export async function getStaticPaths() {
   }
 }
 
-export async function getStaticProps() {
-  const section = await db.section.findMany({where: {id: 1}})
+export async function getStaticProps(props) {
+  // const { slug } = props.params
+  const route = props.params[0] || "home"
+  const sections = await db.section.findMany()
+  const section = await db.section.findFirst({where: {link: route}})
+  console.log("section", section)
   return {
     props: {
-      test: "test",
-      sections: section,
+      route,
+      sections,
+      section,
     },
     revalidate: 1,
   }
 }
 
 const Section = (props) => {
-  return (
-    <>
-      {JSON.stringify(props.section, null, 2)}
-    </>
-  )
+  const router = useRouter()
+  useEffect(() => {
+    NProgress.configure({ parent: 'header' })
+    const handleStart = (url) => {
+      NProgress.start()
+    }
+    const handleStop = () => {
+      NProgress.done()
+    }
+    router.events.on('routeChangeStart', handleStart)
+    router.events.on('routeChangeComplete', handleStop)
+    router.events.on('routeChangeError', handleStop)
+    return () => {
+      router.events.off('routeChangeStart', handleStart)
+      router.events.off('routeChangeComplete', handleStop)
+      router.events.off('routeChangeError', handleStop)
+    }
+  }, [router])
+  return <>
+    <main>
+        {props.section ? parse(props.section.content) : <Page404 />}
+    </main>
+  </>
 }
-
-// This gets called on every request
-// export async function getServerSideProps(props) {
-//   const route = props.params.slug || ["home"]
-//   // TODO: would using findUnique or using the mutations be better?
-//   const section = await db.section.findFirst({ where: { link: route[0] }})
-//   console.log("SECTION:", section)
-//   const header = await db.header.findFirst({ where: { id: 1 }})
-//   const footer = await db.footer.findFirst({ where: { id: 1 }})
-//   // get section not including top-header TODO: fix this
-//   const sections = await db.section.findMany({ where: { link: { not: "top-header" }}})
-
-//   return { props: {
-//     sections: sections,
-//     section: section,
-//     header: header,
-//     footer: footer,
-//     formUserID: process.env.FORM_USER_ID
-//   }}
-// }
-
-// const Section = (props) => {
-//   const data = props.data
-//   const router = useRouter()
-//   useEffect(() => {
-//     NProgress.configure({ parent: 'header' })
-//     const handleStart = (url) => {
-//       NProgress.start()
-//     }
-//     const handleStop = () => {
-//       NProgress.done()
-//     }
-//     router.events.on('routeChangeStart', handleStart)
-//     router.events.on('routeChangeComplete', handleStop)
-//     router.events.on('routeChangeError', handleStop)
-//     return () => {
-//       router.events.off('routeChangeStart', handleStart)
-//       router.events.off('routeChangeComplete', handleStop)
-//       router.events.off('routeChangeError', handleStop)
-//     }
-//   }, [router])
-//   if (data) {
-//     return <Grid>
-//       <main>
-//           {data.content ? parse(data.content) : <Page404 />}
-//       </main>
-//     </Grid>
-//   } else {
-//     return router.asPath === "/" ? <div className="progress-div"><CircularProgress /></div> : <Page404 />
-//   }
-// }
 
 const Home = (props) => {
   //TODO: *** work on fixing for nested routes
@@ -109,15 +81,14 @@ const Home = (props) => {
   }
 
   return (
-    <Grid container height="100vh" justifyContent={"space-between"} flexDirection={"column"}>
+    <Grid className="main-container" container>
       <TopHeader header={props.header}  />
-        {JSON.stringify(props, null, 2)}
         <Suspense fallback={<div className="progress-div"><CircularProgress /></div>}>
           <div onClick={(e) => checkFormFocused(e.target)} style={{flex: "1 0 0%"}}>
-            {/* {props.section.video ? <div>
+            {props.section.video ? <div>
             <ReactPlayer fallback={<CircularProgress />} width={"100%"} className="video-player" url={`${props.section.video}`} wrapper={'p'} loop muted playing playsinline />
-            </div> : null} */}
-            <Section data={props.section} />
+            </div> : null}
+            <Section section={props.section} />
           </div>
           {/* TODO: work on fixing this into having multiple sections per page
           and figuring out why I cant get it to load dynamically after daya is present */}
@@ -142,6 +113,7 @@ const Home = (props) => {
           font-weight: 300 !important;
           font-size: 24px;
           overflow-x: hidden;
+          height: 100%;
         }
 
         * {
@@ -150,13 +122,11 @@ const Home = (props) => {
           box-sizing: border-box;
         }
 
-        {/* .container {
+        .main-container {
           min-height: 100vh;
-          display: flex;
-          flex-direction: column;
           justify-content: space-between;
-          align-items: center;
-        } */}
+          flex-direction: column;
+        }
 
         header > div {
           background: "transparent";
@@ -166,10 +136,6 @@ const Home = (props) => {
           z-index: 3;
         }
 
-        {/* .main-div {
-          min-heigth: 60vh;
-        } */}
-
         .video-player {
           height: 100% !important;
           margin: 0 !important;
@@ -178,15 +144,6 @@ const Home = (props) => {
         .video-div {
           width: 100%;
         }
-
-        {/* main {
-          padding: 2.5rem .65em;
-          flex: 1;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          align-items: center;
-        } */}
 
         .progress-div {
           min-height: 79vh;
@@ -207,14 +164,6 @@ const Home = (props) => {
           height: 50px;
           background: #00C853;
         }
-
-        {/* .no-data-container {
-          min-height: 76.5vh;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          flex-direction: column;
-        } */}
 
         button {
           padding: 7px 16px 3px 16px !important;
