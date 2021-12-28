@@ -10,7 +10,7 @@ import { dynamic, useRouter } from "blitz"
 import Page404 from "./404"
 import NProgress from "nprogress"
 import "nprogress/nprogress.css"
-
+import getSectionByName from "app/sections/queries/getSectionByName"
 
 // TODO: work on figuring out how to do this the correct way?
 const EmailJS = dynamic(
@@ -18,57 +18,81 @@ const EmailJS = dynamic(
   { ssr: false }
 )
 
-// This gets called on every request
-export async function getServerSideProps(props) {
-  const route = props.params.slug || ["home"]
-  // TODO: would using findUnique or using the mutations be better?
-  const section = await db.section.findFirst({ where: { link: route[0] }})
-  const header = await db.header.findFirst({ where: { id: 1 }})
-  const footer = await db.footer.findFirst({ where: { id: 1 }})
-  // get section not including top-header TODO: fix this
-  const sections = await db.section.findMany({ where: { link: { not: "top-header" }}})
+export async function getStaticPaths() {
+  return {
+      paths: [], //indicates that no page needs be created at build time
+      fallback: 'blocking' //indicates the type of fallback
+  }
+}
 
-  return { props: {
-    sections: sections,
-    section: section,
-    header: header,
-    footer: footer,
-    formUserID: process.env.FORM_USER_ID
-  }}
+export async function getStaticProps() {
+  const section = await db.section.findMany({where: {id: 1}})
+  return {
+    props: {
+      test: "test",
+      sections: section,
+    }
+  }
 }
 
 const Section = (props) => {
-  const data = props.data
-  const router = useRouter()
-  NProgress.configure({ parent: 'header' })
-  useEffect(() => {
-    const handleStart = (url) => {
-      NProgress.start()
-    }
-    const handleStop = () => {
-      NProgress.done()
-    }
-
-    router.events.on('routeChangeStart', handleStart)
-    router.events.on('routeChangeComplete', handleStop)
-    router.events.on('routeChangeError', handleStop)
-
-    return () => {
-      router.events.off('routeChangeStart', handleStart)
-      router.events.off('routeChangeComplete', handleStop)
-      router.events.off('routeChangeError', handleStop)
-    }
-  }, [router])
-  if (data) {
-    return <Grid>
-      <main>
-          {data.content ? parse(data.content) : <Page404 />}
-      </main>
-    </Grid>
-  } else {
-    return router.asPath === "/" ? <div className="progress-div"><CircularProgress /></div> : <Page404 />
-  }
+  return (
+    <>
+      {JSON.stringify(props.section, null, 2)}
+    </>
+  )
 }
+
+// This gets called on every request
+// export async function getServerSideProps(props) {
+//   const route = props.params.slug || ["home"]
+//   // TODO: would using findUnique or using the mutations be better?
+//   const section = await db.section.findFirst({ where: { link: route[0] }})
+//   console.log("SECTION:", section)
+//   const header = await db.header.findFirst({ where: { id: 1 }})
+//   const footer = await db.footer.findFirst({ where: { id: 1 }})
+//   // get section not including top-header TODO: fix this
+//   const sections = await db.section.findMany({ where: { link: { not: "top-header" }}})
+
+//   return { props: {
+//     sections: sections,
+//     section: section,
+//     header: header,
+//     footer: footer,
+//     formUserID: process.env.FORM_USER_ID
+//   }}
+// }
+
+// const Section = (props) => {
+//   const data = props.data
+//   const router = useRouter()
+//   useEffect(() => {
+//     NProgress.configure({ parent: 'header' })
+//     const handleStart = (url) => {
+//       NProgress.start()
+//     }
+//     const handleStop = () => {
+//       NProgress.done()
+//     }
+//     router.events.on('routeChangeStart', handleStart)
+//     router.events.on('routeChangeComplete', handleStop)
+//     router.events.on('routeChangeError', handleStop)
+//     return () => {
+//       router.events.off('routeChangeStart', handleStart)
+//       router.events.off('routeChangeComplete', handleStop)
+//       router.events.off('routeChangeError', handleStop)
+//     }
+//   }, [router])
+//   if (data) {
+//     return <Grid>
+//       <main>
+//           {data.content ? parse(data.content) : <Page404 />}
+//       </main>
+//     </Grid>
+//   } else {
+//     return router.asPath === "/" ? <div className="progress-div"><CircularProgress /></div> : <Page404 />
+//   }
+// }
 
 const Home = (props) => {
   //TODO: *** work on fixing for nested routes
@@ -86,11 +110,12 @@ const Home = (props) => {
   return (
     <Grid container height="100vh" justifyContent={"space-between"} flexDirection={"column"}>
       <TopHeader header={props.header}  />
+        {JSON.stringify(props, null, 2)}
         <Suspense fallback={<div className="progress-div"><CircularProgress /></div>}>
           <div onClick={(e) => checkFormFocused(e.target)} style={{flex: "1 0 0%"}}>
-            {props.section.video ? <div>
+            {/* {props.section.video ? <div>
             <ReactPlayer fallback={<CircularProgress />} width={"100%"} className="video-player" url={`${props.section.video}`} wrapper={'p'} loop muted playing playsinline />
-            </div> : null}
+            </div> : null} */}
             <Section data={props.section} />
           </div>
           {/* TODO: work on fixing this into having multiple sections per page

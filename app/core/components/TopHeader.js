@@ -84,7 +84,7 @@ export default function TopHeader(props) {
           <Grid item xs={9} md={10}>
             <Grid container justifyContent={"flex-end"}>
               <Grid className="header-links" fluid={"true"} item sx={{display: {xs: "none", md: "flex"}}}>
-                <MenuLinks links={props.header.links} />
+                {/* <MenuLinks links={props.header.links} /> */}
               </Grid>
               <Grid fluid={"true"} item>
                 {props.topHeaderSection ? props.topHeaderSection.content : null}
@@ -101,7 +101,7 @@ export default function TopHeader(props) {
         </Suspense>
         <ul>
           <strong>Pages:</strong>
-          <MenuLinks links={props.header.links} />
+          {/* <MenuLinks links={props.header.links} /> */}
         </ul>
         <Grid fluid={"true"} item>
           {props.topHeaderSection ? props.topHeaderSection.content : null}

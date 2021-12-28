@@ -67,15 +67,31 @@ CREATE TABLE "Section" (
 );
 
 -- CreateTable
-CREATE TABLE "TopHeader" (
+CREATE TABLE "Footer" (
     "id" SERIAL NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
-    "logo" TEXT NOT NULL DEFAULT E'cmslogo.svg',
     "content" TEXT,
-    "links" TEXT NOT NULL DEFAULT E'Home',
+    "links" TEXT NOT NULL DEFAULT E'home',
+    "logo" TEXT NOT NULL DEFAULT E'cmslogo.svg',
+    "name" TEXT NOT NULL,
+    "title" TEXT,
 
-    CONSTRAINT "TopHeader_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "Footer_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Header" (
+    "id" SERIAL NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "name" TEXT NOT NULL,
+    "title" TEXT,
+    "content" TEXT,
+    "logo" TEXT NOT NULL DEFAULT E'cmslogo.svg',
+    "links" TEXT NOT NULL DEFAULT E'home',
+
+    CONSTRAINT "Header_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
