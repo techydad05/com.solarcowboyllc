@@ -31,7 +31,8 @@ export async function getStaticProps() {
     props: {
       test: "test",
       sections: section,
-    }
+    },
+    revalidate: 1,
   }
 }
 
