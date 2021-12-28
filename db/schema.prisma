@@ -63,5 +63,27 @@ model Section {
   link      String   @default("")
   content   String   @default("")
   video     String?
-  form      Boolean  @default(false)
+  form      Boolean @default(false)
+}
+
+model Footer {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  content   String?
+  links     String   @default("home")
+  logo      String   @default("cmslogo.svg")
+  name      String
+  title     String?
+}
+
+model Header {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  name      String
+  title     String?
+  content   String?
+  logo      String   @default("cmslogo.svg")
+  links     String   @default("home")
 }

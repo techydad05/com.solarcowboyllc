@@ -18,8 +18,8 @@ export const LabeledTextField = forwardRef(
         <label {...labelProps}>
           {label}
           {/* TODO: working on this to make it use different input types */}
-          {JSON.stringify(props, null, 2)}<br />
-          {JSON.stringify(input, null, 2)}
+          {/* {JSON.stringify(props, null, 2)}<br />
+          {JSON.stringify(input, null, 2)} */}
           <input {...input} disabled={submitting} {...props} ref={ref} />
         </label>
 

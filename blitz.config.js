@@ -2,7 +2,7 @@ import { sessionMiddleware, simpleRolesIsAuthorized } from "blitz"
 const config = {
   middleware: [
     sessionMiddleware({
-      cookiePrefix: "com-cms1",
+      cookiePrefix: "com-cms-version-1",
       isAuthorized: simpleRolesIsAuthorized,
     }),
   ],

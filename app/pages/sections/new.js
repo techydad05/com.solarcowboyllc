@@ -1,9 +1,11 @@
-import { Link, useRouter, useMutation, Routes } from "blitz"
+import { Link, useQuery, useRouter, useMutation, Routes } from "blitz"
 import Layout from "app/core/layouts/Layout"
 import createSection from "app/sections/mutations/createSection"
 import { SectionForm, FORM_ERROR } from "app/sections/components/SectionForm"
-import { useState } from "react"
+import { Suspense, useEffect, useState } from "react"
 import Editor from "app/core/components/Editor"
+import db from "db"
+
 
 const NewSectionPage = () => {
   const router = useRouter()

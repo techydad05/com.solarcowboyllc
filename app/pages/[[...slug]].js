@@ -1,17 +1,18 @@
-import { Suspense, useState } from "react"
-import { Image, Link, useMutation, Routes, useParams, useQuery } from "blitz"
+import { Suspense, useState, useEffect, useRef } from "react"
 import Layout from "app/core/layouts/Layout"
 import TopHeader from "app/core/components/TopHeader"
 import db from "db"
-import getProject from "app/projects/queries/getProject"
-import getSectionByName from "app/sections/queries/getSectionByName"
 import parse from "html-react-parser"
-import { CardMedia, CircularProgress } from "@mui/material"
-// import EmailJS from "app/core/components/EmailJS"
+import { CircularProgress, Grid } from "@mui/material"
 import ReactPlayer from "react-player/lazy"
 import theme from "theme"
-import { dynamic } from "blitz"
+import { dynamic, useRouter } from "blitz"
+import Page404 from "./404"
+import NProgress from "nprogress"
+import "nprogress/nprogress.css"
 
+
+// TODO: work on figuring out how to do this the correct way?
 const EmailJS = dynamic(
   () => import("app/core/components/EmailJS"),
   { ssr: false }
@@ -22,60 +23,59 @@ export async function getServerSideProps(props) {
   const route = props.params.slug || ["home"]
   // TODO: would using findUnique or using the mutations be better?
   const section = await db.section.findFirst({ where: { link: route[0] }})
-  // get section not including top-header
+  const header = await db.header.findFirst({ where: { id: 1 }})
+  const footer = await db.footer.findFirst({ where: { id: 1 }})
+  // get section not including top-header TODO: fix this
   const sections = await db.section.findMany({ where: { link: { not: "top-header" }}})
-  // get top-header
-  const topHeader = await db.section.findFirst({ where: { link: "top-header" }})
-  // Pass sections and topheader? to the page via props
+
   return { props: {
     sections: sections,
     section: section,
-    topHeader: topHeader,
+    header: header,
+    footer: footer,
     formUserID: process.env.FORM_USER_ID
-  } }
+  }}
 }
-
-
-// TODO: work on setting this to show a different page
-// when no data is available at all
-// work on making the loading more instant on clicking the link
-const NoDataPage = () => {
-  return <div className="no-data-container">
-      <CircularProgress color="warning" />
-    </div>
-}
-
 
 const Section = (props) => {
-  const params = useParams()
-  const formId = process.env.FORM_ID
-  const route = params.slug || ["home"]
-  // todo: fix this to use for sub-routes eventually
-  // const fullRoute = route.toString().replace(/,/g, "/")
-  try {
-    const [section, {refetch}] = useQuery(getSectionByName, { link: route[0] })
-    return <>
-      {section.video ? <div className="video-div">
-        <ReactPlayer fallback={<CircularProgress />} width={"100%"} className="video-player" url={`${section.video}`} wrapper={'p'} loop muted playing playsinline />
-        </div> : null}
+  const data = props.data
+  const router = useRouter()
+  NProgress.configure({ parent: 'header' })
+  useEffect(() => {
+    const handleStart = (url) => {
+      NProgress.start()
+    }
+    const handleStop = () => {
+      NProgress.done()
+    }
+
+    router.events.on('routeChangeStart', handleStart)
+    router.events.on('routeChangeComplete', handleStop)
+    router.events.on('routeChangeError', handleStop)
+
+    return () => {
+      router.events.off('routeChangeStart', handleStart)
+      router.events.off('routeChangeComplete', handleStop)
+      router.events.off('routeChangeError', handleStop)
+    }
+  }, [router])
+  if (data) {
+    return <Grid>
       <main>
-        <div className="main-div">
-          {section ? parse(section.content) : null}
-        </div>
+          {data.content ? parse(data.content) : <Page404 />}
       </main>
-    </>
-  } catch (error) {
-    console.log("error:", error)
-    return <NoDataPage />
+    </Grid>
+  } else {
+    return router.asPath === "/" ? <div className="progress-div"><CircularProgress /></div> : <Page404 />
   }
 }
 
-
 const Home = (props) => {
   //TODO: *** work on fixing for nested routes
-  const links = props.sections.map((section) => {
-    return { name: section.name, slug: section.link }
-  })
+  // and using links or db?
+  // const links = props.sections.map((section) => {
+  //   return { name: section.name, slug: section.link }
+  // })
   const [sectionFocus, setSectionFocus] = useState(false)
   const checkFormFocused = (target) => {
     if (target.parentNode.parentNode.id === "form") {
@@ -84,30 +84,32 @@ const Home = (props) => {
   }
 
   return (
-    <div className="container">
-      <TopHeader links={links} topHeaderSection={props.topHeader} />
+    <Grid container height="100vh" justifyContent={"space-between"} flexDirection={"column"}>
+      <TopHeader header={props.header}  />
         <Suspense fallback={<div className="progress-div"><CircularProgress /></div>}>
-          <div onClick={(e) => checkFormFocused(e.target)}>
-            <Section />
+          <div onClick={(e) => checkFormFocused(e.target)} style={{flex: "1 0 0%"}}>
+            {props.section.video ? <div>
+            <ReactPlayer fallback={<CircularProgress />} width={"100%"} className="video-player" url={`${props.section.video}`} wrapper={'p'} loop muted playing playsinline />
+            </div> : null}
+            <Section data={props.section} />
           </div>
           {/* TODO: work on fixing this into having multiple sections per page
           and figuring out why I cant get it to load dynamically after daya is present */}
           {sectionFocus ? <EmailJS formUserID={props.formUserID} form={props.section.form} /> : null}
         </Suspense>
-      <footer style={{background: theme.palette.primary.main}}>
-        <a
-          href="https://blitzjs.com?utm_source=blitz-new&utm_medium=app-template&utm_campaign=blitz-new"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by IvanM & BlitzJS
-        </a>
-      </footer>
-
+        <footer style={{background: theme.palette.primary.main}}>
+          <a
+            href="https://blitzjs.com?utm_source=blitz-new&utm_medium=app-template&utm_campaign=blitz-new"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Powered by IvanM & BlitzJS
+          </a>
+        </footer>
       <style jsx global>{`
-        @import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100;0,200;0,300;0,400;0,600;0,700;1,300;1,700&display=swap');        html,
+        @import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100;0,200;0,300;0,400;0,600;0,700;1,300;1,700&display=swap');
 
-        body {
+        html,body {
           padding: 0;
           margin: 0;
           font-family: 'Josefin Sans', sans-serif !important;
@@ -122,17 +124,25 @@ const Home = (props) => {
           box-sizing: border-box;
         }
 
-        .container {
+        {/* .container {
           min-height: 100vh;
           display: flex;
           flex-direction: column;
-          justify-content: center;
+          justify-content: space-between;
           align-items: center;
+        } */}
+
+        header > div {
+          background: "transparent";
         }
 
-        .main-div {
-          min-heigth: 60vh;
+        header > .MuiGrid-root {
+          z-index: 3;
         }
+
+        {/* .main-div {
+          min-heigth: 60vh;
+        } */}
 
         .video-player {
           height: 100% !important;
@@ -143,14 +153,14 @@ const Home = (props) => {
           width: 100%;
         }
 
-        main {
+        {/* main {
           padding: 2.5rem .65em;
           flex: 1;
           display: flex;
           flex-direction: column;
           justify-content: center;
           align-items: center;
-        }
+        } */}
 
         .progress-div {
           min-height: 79vh;
@@ -159,13 +169,26 @@ const Home = (props) => {
           align-items: center;
         }
 
-        .no-data-container {
+        #nprogress {
+          z-index: 1;
+        }
+
+        #nprogress .peg {
+          box-shadow: 0 0 10px #22dd62, 0 0 5px #22dd62;
+        }
+
+        #nprogress .bar {
+          height: 50px;
+          background: #00C853;
+        }
+
+        {/* .no-data-container {
           min-height: 76.5vh;
           display: flex;
           justify-content: center;
           align-items: center;
           flex-direction: column;
-        }
+        } */}
 
         button {
           padding: 7px 16px 3px 16px !important;
@@ -278,7 +301,7 @@ const Home = (props) => {
           }
         }
       `}</style>
-    </div>
+    </Grid>
   )
 }
 

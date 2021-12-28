@@ -1,0 +1,17 @@
+import { resolver } from "blitz"
+import db from "db"
+import { z } from "zod"
+const CreateHeader = z.object({
+  name: z.string(),
+  title: z.string().optional(),
+  content: z.string().optional(),
+  logo: z.string(),
+  links: z.string(),
+})
+export default resolver.pipe(resolver.zod(CreateHeader), resolver.authorize(), async (input) => {
+  // TODO: in multi-tenant app, you must add validation to ensure correct tenant
+  const header = await db.header.create({
+    data: input,
+  })
+  return header
+})

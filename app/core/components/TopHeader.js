@@ -33,8 +33,9 @@ const UserInfo = () => {
         </div>
         <ul>
           <strong>Admin:</strong>
-          <li><Link href="/sections">Sections</Link></li>
-          <li><Link href="/projects">Projects</Link></li>
+          <li><Link href="/sections" prefetch={false}>Sections</Link></li>
+          <li><Link href="/headers" prefetch={false}>Headers</Link></li>
+          <li><Link href="/footers" prefetch={false}>Footers</Link></li>
         </ul>
       </>
     )
@@ -56,11 +57,14 @@ const UserInfo = () => {
 }
 
 const MenuLinks = (props) => {
-  return props.links.map((link, i) => (
-    <div key={i} className="links">
-      <Link href={`/${link.slug == "home" ? "" : link.slug}`}>{link.name}</Link>
-    </div>
-  ))
+  const linkArr = props.links.replace(/-/g, ' ').split(',')
+  return (
+    linkArr.map((link, i) => (
+      <div key={i} className="links">
+        <Link href={`/${link == "home" ? "/" : link}`} prefetch={false}>{link}</Link>
+      </div>
+    ))
+  )
 }
 
 export default function TopHeader(props) {
@@ -80,7 +84,7 @@ export default function TopHeader(props) {
           <Grid item xs={9} md={10}>
             <Grid container justifyContent={"flex-end"}>
               <Grid className="header-links" fluid={"true"} item sx={{display: {xs: "none", md: "flex"}}}>
-                <MenuLinks links={props.links} />
+                <MenuLinks links={props.header.links} />
               </Grid>
               <Grid fluid={"true"} item>
                 {props.topHeaderSection ? props.topHeaderSection.content : null}
@@ -97,7 +101,7 @@ export default function TopHeader(props) {
         </Suspense>
         <ul>
           <strong>Pages:</strong>
-          <MenuLinks links={props.links} />
+          <MenuLinks links={props.header.links} />
         </ul>
         <Grid fluid={"true"} item>
           {props.topHeaderSection ? props.topHeaderSection.content : null}
@@ -106,8 +110,11 @@ export default function TopHeader(props) {
       </AppBar>
       {/* TODO: work on using sass or figuring out the global css cuz its not working */}
       <style jsx global>{`
+        header {
+          background: transparent !important;
+        }
         header .MuiGrid-root {
-          background: #FFF;
+          background: transparent;
           padding: 0 0 0 5px !important;
         }
         .header-links {
@@ -150,6 +157,7 @@ export default function TopHeader(props) {
         }
         #menu-container ul a {
           color: #000 !important;
+          text-transform: capitalize;
         }
         #menu-container ul {
            list-style: none;
