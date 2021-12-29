@@ -123,9 +123,10 @@ const Home = (props) => {
         }
 
         .main-container {
-          min-height: 100vh;
-          justify-content: space-between;
-          flex-direction: column;
+          display: block;
+         // min-height: 100vh;
+         // justify-content: space-between;
+         // flex-direction: column;
         }
 
         header > div {
