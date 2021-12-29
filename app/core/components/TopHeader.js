@@ -57,14 +57,13 @@ const UserInfo = () => {
 }
 
 const MenuLinks = (props) => {
-  const linkArr = props.links.replace(/-/g, ' ').split(',')
-  return (
-    linkArr.map((link, i) => (
+  return props.links.map((link, i) => {
+    return (
       <div key={i} className="links">
-        <Link href={`/${link == "home" ? "/" : link}`} prefetch={false}>{link}</Link>
+        <Link href={`/${link == "home" ? "/" : link}`} prefetch={false}>{link.replace(/-/g, ' ')}</Link>
       </div>
-    ))
-  )
+    )
+  })
 }
 
 export default function TopHeader(props) {
@@ -74,17 +73,17 @@ export default function TopHeader(props) {
   // const currentUser = useCurrentUser()
   return (
     <>
-      <AppBar position="sticky" style={{background: theme.palette.primary.main, color: "#000", "overflow-x": "clip" }}>
+      <AppBar position="sticky" style={{background: "#FFF", color: "#000", "overflow-x": "clip" }}>
         <Grid container alignItems="center" style={{padding:"10px"}}>
-          <Grid item xs={2}>
+          <Grid item xs={4} sm={2}>
             {/* TODO: work on setting up topheader section to its own db object
             for image and other things */}
             <Image layout="responsive" src={props.topHeaderSection ? props.topHeaderSection.logo : logo} alt="blitzjs" />
           </Grid>
-          <Grid item xs={9} md={10}>
+          <Grid item xs={7} sm={9} md={10}>
             <Grid container justifyContent={"flex-end"}>
               <Grid className="header-links" fluid={"true"} item sx={{display: {xs: "none", md: "flex"}}}>
-                {/* <MenuLinks links={props.header.links} /> */}
+                <MenuLinks links={props.links} />
               </Grid>
               <Grid fluid={"true"} item>
                 {props.topHeaderSection ? props.topHeaderSection.content : null}
@@ -101,7 +100,7 @@ export default function TopHeader(props) {
         </Suspense>
         <ul>
           <strong>Pages:</strong>
-          {/* <MenuLinks links={props.header.links} /> */}
+          <MenuLinks links={props.links} />
         </ul>
         <Grid fluid={"true"} item>
           {props.topHeaderSection ? props.topHeaderSection.content : null}
@@ -110,11 +109,7 @@ export default function TopHeader(props) {
       </AppBar>
       {/* TODO: work on using sass or figuring out the global css cuz its not working */}
       <style jsx global>{`
-        header {
-          background: transparent !important;
-        }
         header .MuiGrid-root {
-          background: transparent;
           padding: 0 0 0 5px !important;
         }
         .header-links {

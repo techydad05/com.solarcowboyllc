@@ -6,10 +6,11 @@ import parse from "html-react-parser"
 import { CircularProgress, Grid } from "@mui/material"
 import ReactPlayer from "react-player/lazy"
 import theme from "theme"
-import { dynamic, useRouter } from "blitz"
+import { dynamic, useRouter, useParams, useQuery } from "blitz"
 import Page404 from "./404"
 import NProgress from "nprogress"
 import "nprogress/nprogress.css"
+import getSectionByName from "app/sections/queries/getSectionByName"
 // import getSectionByName from "app/sections/queries/getSectionByName"
 
 // TODO: work on figuring out how to do this the correct way?
@@ -18,33 +19,49 @@ const EmailJS = dynamic(
   { ssr: false }
 )
 
-export async function getStaticPaths() {
-  return {
-      paths: [], //indicates that no page needs be created at build time
-      fallback: 'blocking' //indicates the type of fallback
-  }
-}
 
-export async function getStaticProps(props) {
-  // const { slug } = props.params
+// export async function getStaticPaths() {
+//   return {
+//       paths: [], //indicates that no page needs be created at build time
+//       fallback: 'blocking' //indicates the type of fallback
+//   }
+// }
+
+// export async function getStaticProps(props) {
+//   // const { slug } = props.params
+//   const route = props.params[0] || "home"
+//   const sections = await db.section.findMany()
+//   const section = await db.section.findFirst({where: {link: route}})
+//   console.log("section", section)
+//   return {
+//     props: {
+//       route,
+//       sections,
+//       section,
+//     },
+//     revalidate: 1,
+//   }
+// }
+
+export async function getServerSideProps(props) {
   const route = props.params[0] || "home"
   const sections = await db.section.findMany()
-  const section = await db.section.findFirst({where: {link: route}})
-  console.log("section", section)
+  const section = await db.section.findFirst({where: {link: "home"}})
   return {
     props: {
       route,
       sections,
       section,
     },
-    revalidate: 1,
   }
 }
 
 const Section = (props) => {
   const router = useRouter()
+  const params = useParams()
+  const route = params.slug || ["home"]
   useEffect(() => {
-    NProgress.configure({ parent: 'header' })
+    NProgress.configure({ parent: 'header', showSpinner: false })
     const handleStart = (url) => {
       NProgress.start()
     }
@@ -60,11 +77,23 @@ const Section = (props) => {
       router.events.off('routeChangeError', handleStop)
     }
   }, [router])
+  const section = props.sections.find(e => e.link === route[0])
   return <>
+     {section.video ? <div>
+        <ReactPlayer fallback={<CircularProgress />} width={"100%"} className="video-player" url={`${section.video}`} wrapper={'p'} loop muted playing playsinline />
+      </div> : null}
     <main>
-        {props.section ? parse(props.section.content) : <Page404 />}
+        {section ? parse(section.content) : <Page404 />}
     </main>
   </>
+  // // TODO: FIX TO GET WORKING AGAIN FOR CHANGING DATA WITH ROUTES
+  // // AND THEN SEE IF I CAN DO IT A CLEANER WAY USING THE SECTIONS
+  // // AFTER LOADED ONCE?
+  // return <>
+  //   <main>
+  //       {props.sections ? parse(props.sections.content) : <Page404 />}
+  //   </main>
+  // </>
 }
 
 const Home = (props) => {
@@ -82,13 +111,14 @@ const Home = (props) => {
 
   return (
     <Grid className="main-container" container>
-      <TopHeader header={props.header}  />
+      <TopHeader links={props.sections.map((s) => s.link )}  />
+      <div>
         <Suspense fallback={<div className="progress-div"><CircularProgress /></div>}>
           <div onClick={(e) => checkFormFocused(e.target)} style={{flex: "1 0 0%"}}>
-            {props.section.video ? <div>
+            {/* {props.section.video ? <div>
             <ReactPlayer fallback={<CircularProgress />} width={"100%"} className="video-player" url={`${props.section.video}`} wrapper={'p'} loop muted playing playsinline />
-            </div> : null}
-            <Section section={props.section} />
+            </div> : null} */}
+            <Section sections={props.sections} />
           </div>
           {/* TODO: work on fixing this into having multiple sections per page
           and figuring out why I cant get it to load dynamically after daya is present */}
@@ -103,6 +133,7 @@ const Home = (props) => {
             Powered by IvanM & BlitzJS
           </a>
         </footer>
+      </div>
       <style jsx global>{`
         @import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100;0,200;0,300;0,400;0,600;0,700;1,300;1,700&display=swap');
 
@@ -122,15 +153,13 @@ const Home = (props) => {
           box-sizing: border-box;
         }
 
-        .main-container {
-          display: block;
-         // min-height: 100vh;
-         // justify-content: space-between;
-         // flex-direction: column;
+        #__next {
+          height: 100%;
         }
 
-        header > div {
-          background: "transparent";
+        .main-container {
+          display: block;
+          min-height: 100%;
         }
 
         header > .MuiGrid-root {
@@ -162,7 +191,7 @@ const Home = (props) => {
         }
 
         #nprogress .bar {
-          height: 50px;
+          height: 100%;
           background: #00C853;
         }
 
