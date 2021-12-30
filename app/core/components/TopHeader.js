@@ -58,11 +58,23 @@ const UserInfo = () => {
 
 const MenuLinks = (props) => {
   return props.links.map((link, i) => {
-    return (
-      <div key={i} className="links">
-        <Link href={`/${link == "home" ? "/" : link}`} prefetch={false}>{link.replace(/-/g, ' ')}</Link>
-      </div>
-    )
+    if (props.isMobile) {
+      return (
+        <div className="links" >
+          <Link href={`/${link == "home" ? "/" : link}`} prefetch={false}>{link.replace(/-/g, ' ')}</Link>
+        </div>
+      )
+    } else {
+      return (
+        <div key={i} className="links links-wrapper">
+            <span class="inner-wrapper wrapper-14">
+              <Link passHref href={link} prefetch={false}>
+                <a className="link hover-14">{link.replace(/-/g, ' ')}</a>
+              </Link>
+            </span>
+        </div>
+      )
+    }
   })
 }
 
@@ -95,12 +107,12 @@ export default function TopHeader(props) {
           </Grid>
         </Grid>
         <div id="menu-container" className={`${isOpen ? "slideout" : "slidein"}`}>
-        <Suspense fallback="Loading...">
-          <UserInfo />
-        </Suspense>
+          <Suspense fallback="Loading...">
+            <UserInfo />
+          </Suspense>
         <ul>
           <strong>Pages:</strong>
-          <MenuLinks links={props.links} />
+          <MenuLinks isMobile onClick={() => console.log("clicking link")} links={props.links} />
         </ul>
         <Grid fluid={"true"} item>
           {props.topHeaderSection ? props.topHeaderSection.content : null}

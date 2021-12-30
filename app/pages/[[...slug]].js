@@ -11,8 +11,7 @@ import Page404 from "./404"
 import NProgress from "nprogress"
 import "nprogress/nprogress.css"
 import getSectionByName from "app/sections/queries/getSectionByName"
-// import getSectionByName from "app/sections/queries/getSectionByName"
-
+import "animate.css"
 // TODO: work on figuring out how to do this the correct way?
 const EmailJS = dynamic(
   () => import("app/core/components/EmailJS"),
@@ -304,6 +303,85 @@ const Home = (props) => {
             width: 100%;
             flex-direction: column;
           }
+        }
+
+        // adding custom animations
+
+        .link-cont {
+          position: relative;
+          font-size: 24px;
+        }
+        .link {
+          display: inline-block;
+          position: relative;
+          text-decoration: none;
+          padding: 10px 0;
+          color: #000;
+        }
+        .link-wrapper {
+          position: relative;
+          display: block;
+          padding: 20px 0;
+        }
+        .inner-wrapper {
+          position: relative;
+          display: inline-block;
+        }
+
+        .wrapper-14:before {
+          content: "";
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 3px;
+          height: 100%;
+          background-color: #00c853;
+          transform: scaleY(0);
+          transition: transform 0.3s;
+        }
+        .wrapper-14:after {
+          content: "";
+          position: absolute;
+          top: 0;
+          right: 0;
+          width: 3px;
+          height: 100%;
+          background-color: #00c853;
+          transform: scaleY(0);
+          transition: transform 0.3s;
+        }
+        .wrapper-14 .hover-14 {
+          padding: 10px;
+        }
+        .wrapper-14 .hover-14:before {
+          content: "";
+          position: absolute;
+          top: 0;
+          right: 0;
+          width: 100%;
+          height: 3px;
+          background-color: #00c853;
+          transform: scaleX(0);
+          transition: transform 0.3s;
+        }
+        .wrapper-14 .hover-14:after {
+          content: "";
+          position: absolute;
+          bottom: 0;
+          right: 0;
+          width: 100%;
+          height: 3px;
+          background-color: #00c853;
+          transform: scaleX(0);
+          transition: transform 0.3s;
+        }
+        .wrapper-14:hover:before,
+        .wrapper-14:hover:after {
+          transform: scaleY(1);
+        }
+        .wrapper-14:hover .hover-14:before,
+        .wrapper-14:hover .hover-14:after {
+          transform: scaleX(1);
         }
       `}</style>
     </Grid>
