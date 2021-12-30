@@ -68,7 +68,7 @@ const MenuLinks = (props) => {
       return (
         <div key={i} className="links links-wrapper">
             <span class="inner-wrapper wrapper-14">
-              <Link passHref href={link} prefetch={false}>
+              <Link passHref href={`/${link == "home" ? "/" : link}`} prefetch={false}>
                 <a className="link hover-14">{link.replace(/-/g, ' ')}</a>
               </Link>
             </span>

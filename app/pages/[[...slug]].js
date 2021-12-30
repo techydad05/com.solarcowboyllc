@@ -13,11 +13,9 @@ import "nprogress/nprogress.css"
 import getSectionByName from "app/sections/queries/getSectionByName"
 import "animate.css"
 // TODO: work on figuring out how to do this the correct way?
-const EmailJS = dynamic(
-  () => import("app/core/components/EmailJS"),
+const EmailJS = dynamic(() => import("app/core/components/EmailJS"),
   { ssr: false }
 )
-
 
 // export async function getStaticPaths() {
 //   return {
@@ -45,12 +43,15 @@ const EmailJS = dynamic(
 export async function getServerSideProps(props) {
   const route = props.params[0] || "home"
   const sections = await db.section.findMany()
-  const section = await db.section.findFirst({where: {link: "home"}})
+  // figure out how to use the useRouter hook to get the route in here
+  // const section = await db.section.findFirst({where: {link: "home"}})
   return {
     props: {
+      // is route needed?
+      // section,
       route,
       sections,
-      section,
+      formId: process.env.FORM_USER_ID
     },
   }
 }
@@ -59,6 +60,15 @@ const Section = (props) => {
   const router = useRouter()
   const params = useParams()
   const route = params.slug || ["home"]
+
+  const [sectionFocus, setSectionFocus] = useState(false)
+  const checkFormFocused = (target) => {
+    if (target.parentNode.parentNode.id === "form") {
+      setSectionFocus(true)
+      console.log("form focused")
+    }
+  }
+
   useEffect(() => {
     NProgress.configure({ parent: 'header', showSpinner: false })
     const handleStart = (url) => {
@@ -82,17 +92,15 @@ const Section = (props) => {
         <ReactPlayer fallback={<CircularProgress />} width={"100%"} className="video-player" url={`${section.video}`} wrapper={'p'} loop muted playing playsinline />
       </div> : null}
     <main>
+      <div onClick={(e) => checkFormFocused(e.target)} style={{flex: "1 0 0%"}}>
         {section ? parse(section.content) : <Page404 />}
+      </div>
     </main>
+    {sectionFocus ? <EmailJS formUserID={props.formId} form={section.form} /> : null}
   </>
   // // TODO: FIX TO GET WORKING AGAIN FOR CHANGING DATA WITH ROUTES
   // // AND THEN SEE IF I CAN DO IT A CLEANER WAY USING THE SECTIONS
   // // AFTER LOADED ONCE?
-  // return <>
-  //   <main>
-  //       {props.sections ? parse(props.sections.content) : <Page404 />}
-  //   </main>
-  // </>
 }
 
 const Home = (props) => {
@@ -101,27 +109,18 @@ const Home = (props) => {
   // const links = props.sections.map((section) => {
   //   return { name: section.name, slug: section.link }
   // })
-  const [sectionFocus, setSectionFocus] = useState(false)
-  const checkFormFocused = (target) => {
-    if (target.parentNode.parentNode.id === "form") {
-      setSectionFocus(true)
-    }
-  }
 
   return (
     <Grid className="main-container" container>
       <TopHeader links={props.sections.map((s) => s.link )}  />
       <div>
         <Suspense fallback={<div className="progress-div"><CircularProgress /></div>}>
-          <div onClick={(e) => checkFormFocused(e.target)} style={{flex: "1 0 0%"}}>
-            {/* {props.section.video ? <div>
-            <ReactPlayer fallback={<CircularProgress />} width={"100%"} className="video-player" url={`${props.section.video}`} wrapper={'p'} loop muted playing playsinline />
-            </div> : null} */}
-            <Section sections={props.sections} />
-          </div>
+          {/* <div onClick={(e) => checkFormFocused(e.target)} style={{flex: "1 0 0%"}}> */}
+            <Section sections={props.sections} formId={props.formId} />
+          {/* </div> */}
           {/* TODO: work on fixing this into having multiple sections per page
           and figuring out why I cant get it to load dynamically after daya is present */}
-          {sectionFocus ? <EmailJS formUserID={props.formUserID} form={props.section.form} /> : null}
+          {/* {sectionFocus ? <EmailJS formUserID={props.formUserID} form={props.section.form} /> : null} */}
         </Suspense>
         <footer style={{background: theme.palette.primary.main}}>
           <a
