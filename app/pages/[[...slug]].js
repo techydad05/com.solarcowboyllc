@@ -151,7 +151,7 @@ const Home = (props) => {
         .main-container {
           display: block;
           min-height: 100%;
-          flex-direction: column;
+          flex-direction: column !important;
         }
 
         header > .MuiGrid-root {
