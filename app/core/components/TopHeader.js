@@ -32,12 +32,16 @@ const UserInfo = () => {
           Role: <code>{currentUser.role}</code>
           <br />
         </div>
-        <ul>
-          <strong>Admin:</strong>
-          <li><Link href="/sections" prefetch={false}>Sections</Link></li>
-          <li><Link href="/headers" prefetch={false}>Headers</Link></li>
-          <li><Link href="/footers" prefetch={false}>Footers</Link></li>
-        </ul>
+        <>
+          {currentUser.role == "admin" && (
+            <ul>
+              <strong>Admin:</strong>
+              <li><Link href="/sections" prefetch={false}>Sections</Link></li>
+              <li><Link href="/headers" prefetch={false}>Headers</Link></li>
+              <li><Link href="/footers" prefetch={false}>Footers</Link></li>
+            </ul>
+          )}
+        </>
       </>
     )
   } else {
@@ -87,7 +91,7 @@ export default function TopHeader(props) {
           <Grid item xs={4} sm={2}>
             <Suspense fallback={<CircularProgress />}>
             {console.log(props.header)}
-              <Image layout="responsive" height={"40%"} width={"100%"} src={props.header ? props.header.logo : logo} alt={props.header ? props.header.title : "cmslogo"} />
+              <Image layout="responsive" height={"52%"} width={"100%"} src={props.header ? props.header.logo : logo} alt={props.header ? props.header.title : "cmslogo"} />
             </Suspense>
           </Grid>
           <Grid item xs={7} sm={9} md={10}>

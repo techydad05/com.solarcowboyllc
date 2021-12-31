@@ -6,7 +6,7 @@ import parse from "html-react-parser"
 import { CircularProgress, Grid } from "@mui/material"
 import ReactPlayer from "react-player/lazy"
 import theme from "theme"
-import { dynamic, useRouter, useParams, useQuery } from "blitz"
+import { dynamic, useRouter, useParams } from "blitz"
 import Page404 from "./404"
 import NProgress from "nprogress"
 import "nprogress/nprogress.css"
@@ -195,8 +195,7 @@ const Home = (props) => {
 
         #menu-container a {
           padding: 7px 16px 3px 16px !important;
-          color: #fff !important;
-          font-family: "Josefin Sans", sans-serif !important;
+          // font-family: "Josefin Sans", sans-serif !important;
         }
 
         main p {
@@ -286,7 +285,6 @@ const Home = (props) => {
           align-items: center;
           justify-content: center;
           flex-wrap: wrap;
-
           max-width: 800px;
           margin-top: 3rem;
         }
