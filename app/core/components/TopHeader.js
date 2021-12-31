@@ -100,7 +100,7 @@ export default function TopHeader(props) {
                 <MenuLinks links={props.links} />
               </Grid>
               <Grid fluid={"true"} item sx={{display: {xs: "none", md: "flex"}}}>
-                {props.header ? parse(props.header.content) : null}
+                {props.header && props.header.content ? parse(props.header.content) : null}
               </Grid>
             </Grid>
           </Grid>
@@ -117,7 +117,7 @@ export default function TopHeader(props) {
           <MenuLinks isMobile links={props.links} />
         </ul>
         <Grid fluid={"true"} item>
-          {props.header ? parse(props.header.content) : null}
+          {props.header && props.header.content ? parse(props.header.content) : null}
         </Grid>
       </div>
       </AppBar>
