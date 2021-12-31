@@ -113,7 +113,7 @@ const Home = (props) => {
         <footer style={{background: theme.palette.primary.main}}>
           <div className="footer-container">
             <div className="footer-content">
-              {props.footer ? parse(props.footer.content) : null}
+              {props.footer && props.footer.content ? parse(props.footer.content) : null}
             </div>
           </div>
           <a
