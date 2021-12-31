@@ -60,7 +60,7 @@ const MenuLinks = (props) => {
   return props.links.map((link, i) => {
     if (props.isMobile) {
       return (
-        <div className="links" >
+        <div key={i} className="links" >
           <Link href={`/${link == "home" ? "/" : link}`} prefetch={false}>{link.replace(/-/g, ' ')}</Link>
         </div>
       )
@@ -68,7 +68,7 @@ const MenuLinks = (props) => {
       return (
         <div key={i} className="links links-wrapper">
             <span class="inner-wrapper wrapper-14">
-              <Link passHref href={`/${link == "home" ? "/" : link}`} prefetch={false}>
+              <Link onClick={() => console.log("working")} passHref href={`/${link == "home" ? "/" : link}`} prefetch={false}>
                 <a className="link hover-14">{link.replace(/-/g, ' ')}</a>
               </Link>
             </span>
@@ -79,10 +79,12 @@ const MenuLinks = (props) => {
 }
 
 export default function TopHeader(props) {
+  // const [isOpen, setOpen] = useState(false);
   const [isOpen, setOpen] = useState(false);
   // TODO work on fixing this so the the user is used in one function instead of both
   // cant use because it will need suspense to work
   // const currentUser = useCurrentUser()
+
   return (
     <>
       <AppBar position="sticky" style={{background: "#FFF", color: "#000", "overflow-x": "clip" }}>
@@ -103,10 +105,11 @@ export default function TopHeader(props) {
             </Grid>
           </Grid>
           <Grid item xs={1} sx={{ display: {xl: "none", lg: "none", md: "none"}}}>
-            <Hamburger style={{float: "right !important", marginRight: "10px"}} toggled={isOpen} onToggle={() => setOpen(!isOpen)} />
+            {/* <Hamburger style={{float: "right !important", marginRight: "10px"}} toggled={isOpen} onToggle={() => setOpen(!isOpen)} /> */}
+            <Hamburger style={{float: "right !important", marginRight: "10px"}} toggled={props.reloading} onToggle={() => props.setReloading(!props.reloading)} />
           </Grid>
         </Grid>
-        <div id="menu-container" className={`${isOpen ? "slideout" : "slidein"}`}>
+        <div id="menu-container" className={`${props.reloading ? "slideout" : ""} slidein`}>
           <Suspense fallback="Loading...">
             <UserInfo />
           </Suspense>

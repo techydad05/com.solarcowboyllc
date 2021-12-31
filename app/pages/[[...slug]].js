@@ -1,4 +1,4 @@
-import { Suspense, useState, useEffect } from "react"
+import { Suspense, useState, useEffect, createRef } from "react"
 import Layout from "app/core/layouts/Layout"
 import TopHeader from "app/core/components/TopHeader"
 import db from "db"
@@ -56,11 +56,15 @@ export async function getServerSideProps(props) {
   }
 }
 
+
+
 const Section = (props) => {
   const router = useRouter()
   const params = useParams()
   const route = params.slug || ["home"]
+  const myref = createRef()
 
+  // checking for form to load emailjs
   const [sectionFocus, setSectionFocus] = useState(false)
   const checkFormFocused = (target) => {
     if (target.parentNode.parentNode.id === "form") {
@@ -70,11 +74,17 @@ const Section = (props) => {
   }
 
   useEffect(() => {
+    document.body.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: 'smooth'
+    })
     NProgress.configure({ parent: 'header', showSpinner: false })
     const handleStart = (url) => {
       NProgress.start()
+      props.reloading()
     }
-    const handleStop = () => {
+    const handleStop = (url) => {
       NProgress.done()
     }
     router.events.on('routeChangeStart', handleStart)
@@ -98,26 +108,19 @@ const Section = (props) => {
     </main>
     {sectionFocus ? <EmailJS formUserID={props.formId} form={section.form} /> : null}
   </>
-  // // TODO: FIX TO GET WORKING AGAIN FOR CHANGING DATA WITH ROUTES
-  // // AND THEN SEE IF I CAN DO IT A CLEANER WAY USING THE SECTIONS
-  // // AFTER LOADED ONCE?
 }
 
 const Home = (props) => {
   //TODO: *** work on fixing for nested routes
   // and using links or db?
-  // const links = props.sections.map((section) => {
-  //   return { name: section.name, slug: section.link }
-  // })
+  const [reloading, setReloading] = useState(false)
 
   return (
     <Grid className="main-container" container>
-      <TopHeader links={props.sections.map((s) => s.link )}  />
+      <TopHeader setReloading={setReloading} reloading={reloading} links={props.sections.map((s) => s.link )}  />
       <div>
         <Suspense fallback={<div className="progress-div"><CircularProgress /></div>}>
-          {/* <div onClick={(e) => checkFormFocused(e.target)} style={{flex: "1 0 0%"}}> */}
-            <Section sections={props.sections} formId={props.formId} />
-          {/* </div> */}
+            <Section reloading={() => setReloading(false)} sections={props.sections} formId={props.formId} />
           {/* TODO: work on fixing this into having multiple sections per page
           and figuring out why I cant get it to load dynamically after daya is present */}
           {/* {sectionFocus ? <EmailJS formUserID={props.formUserID} form={props.section.form} /> : null} */}
