@@ -1,5 +1,8 @@
 import { sessionMiddleware, simpleRolesIsAuthorized } from "blitz"
 const config = {
+  images: {
+    // domains: ['picsum.photos', 'https://picsum.photos']
+  },
   middleware: [
     sessionMiddleware({
       cookiePrefix: "com-cms-version-1",

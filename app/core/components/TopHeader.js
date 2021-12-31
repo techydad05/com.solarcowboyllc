@@ -5,9 +5,10 @@ import { useCurrentUser } from "app/core/hooks/useCurrentUser"
 import logout from "app/auth/mutations/logout"
 import Hamburger from "hamburger-react"
 import Button from "@mui/material/Button"
-import { AppBar } from "@mui/material"
+import { AppBar, CircularProgress } from "@mui/material"
 import { Grid } from "@mui/material"
 import logo from "public/cmslogo.svg"
+import parse from "html-react-parser"
 
 // TODO: work on using the them in every area it makes sense
 import theme from "theme"
@@ -79,33 +80,26 @@ const MenuLinks = (props) => {
 }
 
 export default function TopHeader(props) {
-  // const [isOpen, setOpen] = useState(false);
-  const [isOpen, setOpen] = useState(false);
-  // TODO work on fixing this so the the user is used in one function instead of both
-  // cant use because it will need suspense to work
-  // const currentUser = useCurrentUser()
-
   return (
     <>
       <AppBar position="sticky" style={{background: "#FFF", color: "#000", "overflow-x": "clip" }}>
         <Grid container alignItems="center" style={{padding:"10px"}}>
           <Grid item xs={4} sm={2}>
-            {/* TODO: work on setting up topheader section to its own db object
-            for image and other things */}
-            <Image layout="responsive" src={props.topHeaderSection ? props.topHeaderSection.logo : logo} alt="blitzjs" />
+            <Suspense fallback={<CircularProgress />}>
+              <Image layout="responsive" height={"40%"} width={"100%"} src={`${props.header ? props.header.logo : logo}`} alt={props.header.title ? props.header.title : "cmslogo"} />
+            </Suspense>
           </Grid>
           <Grid item xs={7} sm={9} md={10}>
             <Grid container justifyContent={"flex-end"}>
               <Grid className="header-links" fluid={"true"} item sx={{display: {xs: "none", md: "flex"}}}>
                 <MenuLinks links={props.links} />
               </Grid>
-              <Grid fluid={"true"} item>
-                {props.topHeaderSection ? props.topHeaderSection.content : null}
+              <Grid fluid={"true"} item sx={{display: {xs: "none", md: "flex"}}}>
+                {props.header ? parse(props.header.content) : null}
               </Grid>
             </Grid>
           </Grid>
           <Grid item xs={1} sx={{ display: {xl: "none", lg: "none", md: "none"}}}>
-            {/* <Hamburger style={{float: "right !important", marginRight: "10px"}} toggled={isOpen} onToggle={() => setOpen(!isOpen)} /> */}
             <Hamburger style={{float: "right !important", marginRight: "10px"}} toggled={props.reloading} onToggle={() => props.setReloading(!props.reloading)} />
           </Grid>
         </Grid>
@@ -115,15 +109,22 @@ export default function TopHeader(props) {
           </Suspense>
         <ul>
           <strong>Pages:</strong>
-          <MenuLinks isMobile onClick={() => console.log("clicking link")} links={props.links} />
+          <MenuLinks isMobile links={props.links} />
         </ul>
         <Grid fluid={"true"} item>
-          {props.topHeaderSection ? props.topHeaderSection.content : null}
+          {props.header ? parse(props.header.content) : null}
         </Grid>
       </div>
       </AppBar>
       {/* TODO: work on using sass or figuring out the global css cuz its not working */}
       <style jsx global>{`
+        .content-container {
+          height: 100%;
+          width: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
         header .MuiGrid-root {
           padding: 0 0 0 5px !important;
         }
@@ -136,7 +137,7 @@ export default function TopHeader(props) {
         }
         .header-links .links{
           margin-right: 10px;
-          // padding-top: 4px;
+          padding-top: 4px;
         }
         .header-links .links:last-child {
           padding-top: 0;
@@ -165,7 +166,7 @@ export default function TopHeader(props) {
           float: right;
           z-index: 1 !important;
         }
-        #menu-container ul a {
+        #menu-container a {
           color: #000 !important;
           text-transform: capitalize;
         }

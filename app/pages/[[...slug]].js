@@ -43,12 +43,13 @@ const EmailJS = dynamic(() => import("app/core/components/EmailJS"),
 export async function getServerSideProps(props) {
   const route = props.params[0] || "home"
   const sections = await db.section.findMany()
+  const header = await db.header.findFirst({ where: { id: 1 } })
   // figure out how to use the useRouter hook to get the route in here
   // const section = await db.section.findFirst({where: {link: "home"}})
   return {
     props: {
       // is route needed?
-      // section,
+      header,
       route,
       sections,
       formId: process.env.FORM_USER_ID
@@ -56,13 +57,10 @@ export async function getServerSideProps(props) {
   }
 }
 
-
-
 const Section = (props) => {
   const router = useRouter()
   const params = useParams()
   const route = params.slug || ["home"]
-  const myref = createRef()
 
   // checking for form to load emailjs
   const [sectionFocus, setSectionFocus] = useState(false)
@@ -117,7 +115,7 @@ const Home = (props) => {
 
   return (
     <Grid className="main-container" container>
-      <TopHeader setReloading={setReloading} reloading={reloading} links={props.sections.map((s) => s.link )}  />
+      <TopHeader header={props.header} setReloading={setReloading} reloading={reloading} links={props.sections.map((s) => s.link )}  />
       <div>
         <Suspense fallback={<div className="progress-div"><CircularProgress /></div>}>
             <Section reloading={() => setReloading(false)} sections={props.sections} formId={props.formId} />
@@ -126,6 +124,11 @@ const Home = (props) => {
           {/* {sectionFocus ? <EmailJS formUserID={props.formUserID} form={props.section.form} /> : null} */}
         </Suspense>
         <footer style={{background: theme.palette.primary.main}}>
+          <div className="footer-container">
+            <div className="footer-content">
+              {props.footer ? parse(props.footer.content) : null}
+            </div>
+          </div>
           <a
             href="https://blitzjs.com?utm_source=blitz-new&utm_medium=app-template&utm_campaign=blitz-new"
             target="_blank"
