@@ -10,7 +10,6 @@ import { dynamic, useRouter, useParams, useQuery } from "blitz"
 import Page404 from "./404"
 import NProgress from "nprogress"
 import "nprogress/nprogress.css"
-import getSectionByName from "app/sections/queries/getSectionByName"
 import "animate.css"
 // TODO: work on figuring out how to do this the correct way?
 const EmailJS = dynamic(() => import("app/core/components/EmailJS"),
@@ -42,18 +41,21 @@ const EmailJS = dynamic(() => import("app/core/components/EmailJS"),
 
 export async function getServerSideProps(props) {
   const route = props.params[0] || "home"
-  const sections = await db.section.findMany()
-  const header = await db.header.findFirst({ where: { id: 1 } })
-  // figure out how to use the useRouter hook to get the route in here
-  // const section = await db.section.findFirst({where: {link: "home"}})
-  return {
-    props: {
-      // is route needed?
-      header,
-      route,
-      sections,
-      formId: process.env.FORM_USER_ID
-    },
+  try {
+    const sections = await db.section.findMany()
+    const header = await db.header.findFirst({ where: { id: 1 } })
+    const footer = await db.footer.findFirst({ where: { id: 1 } })
+    return {
+      props: {
+        // is route needed?
+        header,
+        route,
+        sections,
+        formId: process.env.FORM_USER_ID
+      },
+    }
+  } catch (error) {
+    console.log("Error:", error)
   }
 }
 
@@ -95,17 +97,25 @@ const Section = (props) => {
     }
   }, [router])
   const section = props.sections.find(e => e.link === route[0])
-  return <>
-     {section.video ? <div>
-        <ReactPlayer fallback={<CircularProgress />} width={"100%"} className="video-player" url={`${section.video}`} wrapper={'p'} loop muted playing playsinline />
-      </div> : null}
-    <main>
-      <div onClick={(e) => checkFormFocused(e.target)} style={{flex: "1 0 0%"}}>
-        {section ? parse(section.content) : <Page404 />}
-      </div>
-    </main>
-    {sectionFocus ? <EmailJS formUserID={props.formId} form={section.form} /> : null}
-  </>
+
+
+  // working on this considering setting up a default object to
+  // keep moving forward..
+  try {
+    return <>
+      {section.video ? <div>
+          <ReactPlayer fallback={<CircularProgress />} width={"100%"} className="video-player" url={`${section.video}`} wrapper={'p'} loop muted playing playsinline />
+        </div> : null}
+      <main>
+        <div onClick={(e) => checkFormFocused(e.target)} style={{flex: "1 0 0%"}}>
+          {section ? parse(section.content) : <Page404 />}
+        </div>
+      </main>
+      {sectionFocus ? <EmailJS formUserID={props.formId} form={section.form} /> : null}
+    </>
+  } catch (error) {
+    console.log("Error:", error)
+  }
 }
 
 const Home = (props) => {

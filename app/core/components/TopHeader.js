@@ -86,7 +86,8 @@ export default function TopHeader(props) {
         <Grid container alignItems="center" style={{padding:"10px"}}>
           <Grid item xs={4} sm={2}>
             <Suspense fallback={<CircularProgress />}>
-              <Image layout="responsive" height={"40%"} width={"100%"} src={`${props.header ? props.header.logo : logo}`} alt={props.header.title ? props.header.title : "cmslogo"} />
+            {console.log(props.header)}
+              <Image layout="responsive" height={"40%"} width={"100%"} src={props.header ? props.header.logo : logo} alt={props.header ? props.header.title : "cmslogo"} />
             </Suspense>
           </Grid>
           <Grid item xs={7} sm={9} md={10}>
