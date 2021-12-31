@@ -16,39 +16,16 @@ const EmailJS = dynamic(() => import("app/core/components/EmailJS"),
   { ssr: false }
 )
 
-// export async function getStaticPaths() {
-//   return {
-//       paths: [], //indicates that no page needs be created at build time
-//       fallback: 'blocking' //indicates the type of fallback
-//   }
-// }
-
-// export async function getStaticProps(props) {
-//   // const { slug } = props.params
-//   const route = props.params[0] || "home"
-//   const sections = await db.section.findMany()
-//   const section = await db.section.findFirst({where: {link: route}})
-//   console.log("section", section)
-//   return {
-//     props: {
-//       route,
-//       sections,
-//       section,
-//     },
-//     revalidate: 1,
-//   }
-// }
-
 export async function getServerSideProps(props) {
-  const route = props.params[0] || "home"
   try {
+    const route = props.params[0] || "home"
     const sections = await db.section.findMany()
     const header = await db.header.findFirst({ where: { id: 1 } })
     const footer = await db.footer.findFirst({ where: { id: 1 } })
     return {
       props: {
-        // is route needed?
         header,
+        footer,
         route,
         sections,
         formId: process.env.FORM_USER_ID
@@ -174,6 +151,7 @@ const Home = (props) => {
         .main-container {
           display: block;
           min-height: 100%;
+          flex-direction: column;
         }
 
         header > .MuiGrid-root {
